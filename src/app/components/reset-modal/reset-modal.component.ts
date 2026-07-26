@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalService } from '../../services/modal.service';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-reset-modal',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,RouterLink],
   templateUrl: './reset-modal.component.html',
   styleUrl: './reset-modal.component.scss'
 })

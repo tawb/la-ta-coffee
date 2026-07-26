@@ -1,0 +1,68 @@
+<section class="login-page">
+  <div class="login-page__in">
+    <div class="login-page__top">
+      <h3>Reserve a Seat</h3>
+      <p>Al-Tireh · Twelve seats</p>
+    </div>
+
+    <form [formGroup]="reserveForm" (ngSubmit)="onSubmit()" class="fields fields--grid">
+      <div class="f">
+        <label>Date</label>
+        <input type="date" formControlName="date" />
+        @if (reserveForm.get('date')?.invalid && reserveForm.get('date')?.touched) {
+          <span class="err">
+            @if (reserveForm.get('date')?.errors?.['pastDate']) {
+              Please pick today or a future date
+            } @else {
+              Date is required
+            }
+          </span>
+        }
+      </div>
+
+      <div class="f">
+        <label>Time</label>
+        <select formControlName="time">
+          <option value="" disabled selected>Choose a time</option>
+          @for (slot of timeSlots; track slot) {
+            <option [value]="slot">{{ slot }}</option>
+          }
+        </select>
+        @if (reserveForm.get('time')?.invalid && reserveForm.get('time')?.touched) {
+          <span class="err">Pick a time</span>
+        }
+      </div>
+
+      <div class="f">
+        <label>Party size</label>
+        <select formControlName="party">
+          <option value="" disabled selected>How many?</option>
+          @for (size of partySizes; track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+        @if (reserveForm.get('party')?.invalid && reserveForm.get('party')?.touched) {
+          <span class="err">Party size is required</span>
+        }
+      </div>
+
+      <div class="f">
+        <label>Name</label>
+        <input type="text" formControlName="name" placeholder="Your name" />
+        @if (reserveForm.get('name')?.invalid && reserveForm.get('name')?.touched) {
+          <span class="err">Name is required</span>
+        }
+      </div>
+
+      <div class="f wide">
+        <label>Phone</label>
+        <input type="tel" formControlName="phone" placeholder="059 000 0000" />
+        @if (reserveForm.get('phone')?.invalid && reserveForm.get('phone')?.touched) {
+          <span class="err">Enter a valid phone number</span>
+        }
+      </div>
+
+      <button type="submit" class="submit wide" [disabled]="reserveForm.invalid">Confirm reservation</button>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,56 @@
+<section class="login-page">
+  <div class="login-page__in">
+    <div class="login-page__top">
+      <h3>Order Ahead</h3>
+      <p>Pickup at the counter</p>
+    </div>
+
+    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="fields fields--grid">
+      <div class="f">
+        <label>Pickup time</label>
+        <select formControlName="time">
+          <option value="" disabled selected>Choose a time</option>
+          @for (slot of timeSlots; track slot) {
+            <option [value]="slot">{{ slot }}</option>
+          }
+        </select>
+        @if (orderForm.get('time')?.invalid && orderForm.get('time')?.touched) {
+          <span class="err">Pick a pickup time</span>
+        }
+      </div>
+
+      <div class="f">
+        <label>Name</label>
+        <input type="text" formControlName="name" placeholder="Your name" />
+        @if (orderForm.get('name')?.invalid && orderForm.get('name')?.touched) {
+          <span class="err">Name is required</span>
+        }
+      </div>
+
+      <div class="f wide" style="gap:.9rem">
+        <label>Your order</label>
+        <div class="picker">
+          @for (item of allItems; track item.n) {
+            <label class="pick" (click)="toggleItem(item.n)">
+              <div class="pick__l">
+                <span class="pick__b" [class.on]="selectedItems().has(item.n)"></span>
+                <span class="pick__n">{{ item.n }}</span>
+              </div>
+              <span class="pick__p">₪{{ item.p }}</span>
+            </label>
+          }
+        </div>
+        @if (selectedItems().size === 0) {
+          <span class="err">Pick at least one item</span>
+        }
+      </div>
+
+      <div class="tot wide">
+        <span>Total</span>
+        <span>₪{{ total() }}</span>
+      </div>
+
+      <button type="submit" class="submit wide" [disabled]="orderForm.invalid || selectedItems().size === 0">Place order</button>
+    </form>
+  </div>
+</section>
