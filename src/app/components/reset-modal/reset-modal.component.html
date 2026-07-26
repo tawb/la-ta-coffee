@@ -1,0 +1,26 @@
+<div class="scrim" [class.open]="modalService.activeModal() === 'reset'" (click)="modalService.close()"></div>
+
+<div class="modal auth" [class.open]="modalService.activeModal() === 'reset'">
+  <div class="modal__in">
+    <div class="modal__top">
+      <div>
+        <h3>Reset password</h3>
+        <p>We'll send a link</p>
+      </div>
+      <button class="mx" (click)="modalService.close()">Close</button>
+    </div>
+
+    <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="fields">
+      <div class="f wide">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+        @if (resetForm.get('email')?.invalid && resetForm.get('email')?.touched) {
+          <span class="err">Enter a valid email</span>
+        }
+      </div>
+
+      <button type="submit" class="submit" [disabled]="resetForm.invalid">Send reset link</button>
+      <p class="swap"><a (click)="modalService.open('login')">Back to log in</a></p>
+    </form>
+  </div>
+</div>
