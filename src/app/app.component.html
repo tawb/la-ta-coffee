@@ -1,6 +1,11 @@
 <app-nav></app-nav>
 <router-outlet></router-outlet>
-<app-hero></app-hero>
+
+@if (isHomePage()) {
+  <app-hero></app-hero>
+}
+
 <app-reset-modal></app-reset-modal>
 <app-account-modal></app-account-modal>
 <app-search-modal></app-search-modal>
+<div class="custom-cursor" appCursor></div>

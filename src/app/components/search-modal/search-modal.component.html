@@ -21,7 +21,7 @@
             <b>{{ item.n }}</b><br>
             <span>{{ item.note }}</span>
           </div>
-          <span class="res__p">₪{{ item.p }}</span>
+          <span class="res__p">{{ item.p | price }}</span>
         </div>
       }
     </div>

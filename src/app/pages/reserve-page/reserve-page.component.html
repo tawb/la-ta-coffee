@@ -62,7 +62,9 @@
         }
       </div>
 
-      <button type="submit" class="submit wide" [disabled]="reserveForm.invalid">Confirm reservation</button>
+      <button type="submit" class="submit wide" [disabled]="reserveForm.invalid || submitting">
+  {{ submitting ? 'Submitting...' : 'Confirm reservation' }}
+</button>
     </form>
   </div>
 </section>

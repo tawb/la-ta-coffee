@@ -30,16 +30,14 @@
       <div class="f wide" style="gap:.9rem">
         <label>Your order</label>
         <div class="picker">
-          @for (item of allItems; track item.n) {
-            <label class="pick" (click)="toggleItem(item.n)">
-              <div class="pick__l">
-                <span class="pick__b" [class.on]="selectedItems().has(item.n)"></span>
-                <span class="pick__n">{{ item.n }}</span>
-              </div>
-              <span class="pick__p">₪{{ item.p }}</span>
-            </label>
-          }
-        </div>
+  @for (item of allItems; track item.n) {
+    <app-order-item
+      [item]="item"
+      [selected]="selectedItems().has(item.n)"
+      (toggled)="toggleItem($event)">
+    </app-order-item>
+  }
+</div>
         @if (selectedItems().size === 0) {
           <span class="err">Pick at least one item</span>
         }
@@ -50,7 +48,9 @@
         <span>₪{{ total() }}</span>
       </div>
 
-      <button type="submit" class="submit wide" [disabled]="orderForm.invalid || selectedItems().size === 0">Place order</button>
+      <button type="submit" class="submit wide" [disabled]="orderForm.invalid || selectedItems().size === 0 || submitting">
+  {{ submitting ? 'Placing order...' : 'Place order' }}
+</button>
     </form>
   </div>
 </section>

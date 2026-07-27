@@ -1,20 +1,24 @@
 import { Component, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { MenuService, MenuItem } from '../../services/menu.service';
-
+import { OrderStateService } from '../../services/order-state.service';
+import Swal from 'sweetalert2';
+import { OrderItemComponent } from '../../components/order-item/order-item.component';
 @Component({
   selector: 'app-order-page',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,OrderItemComponent],
   templateUrl: './order-page.component.html',
   styleUrl: './order-page.component.scss'
 })
 export class OrderPageComponent {
   orderForm: FormGroup;
-  allItems: MenuItem[];
+  allItems: MenuItem[] = [];
   timeSlots: string[] = [];
   selectedItems = signal<Set<string>>(new Set());
+  submitting = false;
 
   total = computed(() => {
     const selected = this.selectedItems();
@@ -26,9 +30,18 @@ export class OrderPageComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private menuService: MenuService
+    private http: HttpClient,
+    private menuService: MenuService,
+    private orderState: OrderStateService
   ) {
-    this.allItems = this.menuService.getAllItemsFlat();
+    this.menuService.getMenu().subscribe({
+      next: () => {
+        this.allItems = this.menuService.getAllItemsFlat();
+      },
+      error: (err) => {
+        console.error('Could not load menu for order:', err);
+      }
+    });
 
     for (let hh = 7; hh <= 18; hh++) {
       for (let mm = 0; mm < 60; mm += 30) {
@@ -58,11 +71,36 @@ export class OrderPageComponent {
 
   onSubmit() {
     if (this.orderForm.invalid || this.selectedItems().size === 0) return;
-    console.log('Order:', {
+
+    this.submitting = true;
+
+    const payload = {
       ...this.orderForm.value,
       items: Array.from(this.selectedItems()),
       total: this.total()
+    };
+
+    this.http.post('https://jsonplaceholder.typicode.com/posts', payload).subscribe({
+      next: () => {
+        this.submitting = false;
+        Swal.fire({
+          title: 'Order placed!',
+          icon: 'success',
+          timer: 1400,
+          showConfirmButton: false
+        });
+        const id = this.orderState.createConfirmation();
+        this.router.navigate(['/confirmation', id]);
+      },
+      error: (err) => {
+        this.submitting = false;
+        console.error('Order failed:', err);
+        Swal.fire({
+          title: 'Something went wrong',
+          text: 'Please try again',
+          icon: 'error'
+        });
+      }
     });
-    this.router.navigate(['/']);
   }
 }

@@ -1,0 +1,96 @@
+.conf {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(7rem, 14vh, 10rem) var(--gut) clamp(2rem, 5vw, 3.5rem);
+}
+
+.conf__card {
+  max-width: 26rem;
+  width: 100%;
+  text-align: center;
+  padding: clamp(2.2rem, 5vw, 3.2rem) clamp(1.8rem, 4vw, 2.6rem);
+  border: 1px solid var(--ghost);
+  border-radius: 4px;
+  background: var(--ink2);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, .35);
+}
+
+.conf__icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-size: 1.4rem;
+}
+
+.conf__card h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 5vw, 2.4rem);
+  margin: 0;
+}
+
+.conf__sub {
+  margin: .7rem 0 0;
+  color: var(--dim);
+  font-size: .75rem;
+  letter-spacing: .12em;
+}
+
+.conf__code {
+  margin: 2rem 0;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--ghost);
+  border-bottom: 1px solid var(--ghost);
+}
+.conf__code span {
+  display: block;
+  font-size: .57rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: .5rem;
+}
+.conf__code strong {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  letter-spacing: .06em;
+  color: var(--amber);
+  font-weight: 400;
+}
+
+.submit {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-size: .63rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  transition: color .7s var(--e);
+}
+.submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  transform: translateY(101%);
+  transition: transform .7s var(--e);
+  z-index: -1;
+}
+.submit:hover {
+  color: var(--ink);
+}
+.submit:hover::after {
+  transform: translateY(0);
+}

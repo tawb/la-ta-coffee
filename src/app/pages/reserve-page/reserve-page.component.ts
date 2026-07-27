@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { OrderStateService } from '../../services/order-state.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reserve-page',
@@ -13,10 +16,13 @@ export class ReservePageComponent {
   reserveForm: FormGroup;
   timeSlots: string[] = [];
   partySizes = [1, 2, 3, 4, 5, 6];
+  submitting = false;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private http: HttpClient,
+    private orderState: OrderStateService
   ) {
     for (let hh = 7; hh <= 18; hh++) {
       for (let mm = 0; mm < 60; mm += 30) {
@@ -45,7 +51,30 @@ export class ReservePageComponent {
 
   onSubmit() {
     if (this.reserveForm.invalid) return;
-    console.log('Reservation:', this.reserveForm.value);
-    this.router.navigate(['/']);
+
+    this.submitting = true;
+
+    this.http.post('https://jsonplaceholder.typicode.com/posts', this.reserveForm.value).subscribe({
+      next: () => {
+        this.submitting = false;
+        Swal.fire({
+          title: 'Reservation confirmed!',
+          icon: 'success',
+          timer: 1400,
+          showConfirmButton: false
+        });
+        const id = this.orderState.createConfirmation();
+        this.router.navigate(['/confirmation', id]);
+      },
+      error: (err) => {
+        this.submitting = false;
+        console.error('Reservation failed:', err);
+        Swal.fire({
+          title: 'Something went wrong',
+          text: 'Please try again',
+          icon: 'error'
+        });
+      }
+    });
   }
 }

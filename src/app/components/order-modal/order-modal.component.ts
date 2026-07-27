@@ -1,34 +1,43 @@
 import { Component, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalService } from '../../services/modal.service';
+import { Router } from '@angular/router';
 import { MenuService, MenuItem } from '../../services/menu.service';
-
+import { OrderStateService } from '../../services/order-state.service';
+import { PricePipe } from '../../pipes/price.pipe';
 @Component({
-  selector: 'app-order-modal',
+  selector: 'app-order-page',
   standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './order-modal.component.html',
-  styleUrl: './order-modal.component.scss'
+  imports: [ReactiveFormsModule,PricePipe],
+  templateUrl: './order-page.component.html',
+  styleUrl: './order-page.component.scss'
 })
-export class OrderModalComponent {
+export class OrderPageComponent {
   orderForm: FormGroup;
-  allItems: MenuItem[];
+  allItems: MenuItem[] = [];
   timeSlots: string[] = [];
-  selectedItems = signal<Set<string>>(new Set());//built in collection like an array, but only stores unique values
+  selectedItems = signal<Set<string>>(new Set());
 
   total = computed(() => {
     const selected = this.selectedItems();
     return this.allItems
       .filter(item => selected.has(item.n))
-      .reduce((sum, item) => sum + item.p, 0);//.reduce() walks through an array and narrow  it down into one single value. sum is a running accumulator.
+      .reduce((sum, item) => sum + item.p, 0);
   });
 
   constructor(
     private fb: FormBuilder,
-    public modalService: ModalService,
-    private menuService: MenuService
+    private router: Router,
+    private menuService: MenuService,
+    private orderState: OrderStateService
   ) {
-    this.allItems = this.menuService.getAllItemsFlat();
+    this.menuService.getMenu().subscribe({
+      next: () => {
+        this.allItems = this.menuService.getAllItemsFlat();
+      },
+      error: (err) => {
+        console.error('Could not load menu for order:', err);
+      }
+    });
 
     for (let hh = 7; hh <= 18; hh++) {
       for (let mm = 0; mm < 60; mm += 30) {
@@ -46,8 +55,7 @@ export class OrderModalComponent {
 
   toggleItem(name: string) {
     this.selectedItems.update(current => {
-      const next = new Set(current);//brand new Set, copying every item from current into it
-      //Always building a fresh copy guarantees Angular sees a genuinely new reference and reacts correctly.
+      const next = new Set(current);
       if (next.has(name)) {
         next.delete(name);
       } else {
@@ -60,10 +68,11 @@ export class OrderModalComponent {
   onSubmit() {
     if (this.orderForm.invalid || this.selectedItems().size === 0) return;
     console.log('Order:', {
-      ...this.orderForm.value,//spread operator
+      ...this.orderForm.value,
       items: Array.from(this.selectedItems()),
       total: this.total()
     });
-    this.modalService.close();
+    const id = this.orderState.createConfirmation();
+    this.router.navigate(['/confirmation', id]);
   }
 }
