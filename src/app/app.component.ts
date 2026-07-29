@@ -8,9 +8,10 @@ import { AccountModalComponent } from './components/account-modal/account-modal.
 import { SearchModalComponent} from './components/search-modal/search-modal.component';
 import { ReserveModalComponent } from './components/reserve-modal/reserve-modal.component';
 import { OrderModalComponent } from './components/order-modal/order-modal.component';
+import { HeroComponent } from './components/hero/hero.component';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,NavComponent,LoginModalComponent,SignupModalComponent, ResetModalComponent,AccountModalComponent,SearchModalComponent,ReserveModalComponent,OrderModalComponent],
+  imports: [RouterOutlet,NavComponent,LoginModalComponent,SignupModalComponent, ResetModalComponent,AccountModalComponent,SearchModalComponent,ReserveModalComponent,OrderModalComponent,HeroComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
