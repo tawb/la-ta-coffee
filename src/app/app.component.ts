@@ -6,9 +6,11 @@ import { SignupModalComponent } from './components/signup-modal/signup-modal.com
 import { ResetModalComponent } from './components/reset-modal/reset-modal.component';
 import { AccountModalComponent } from './components/account-modal/account-modal.component';
 import { SearchModalComponent} from './components/search-modal/search-modal.component';
+import { ReserveModalComponent } from './components/reserve-modal/reserve-modal.component';
+import { OrderModalComponent } from './components/order-modal/order-modal.component';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,NavComponent,LoginModalComponent,SignupModalComponent, ResetModalComponent,AccountModalComponent,SearchModalComponent],
+  imports: [RouterOutlet,NavComponent,LoginModalComponent,SignupModalComponent, ResetModalComponent,AccountModalComponent,SearchModalComponent,ReserveModalComponent,OrderModalComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
