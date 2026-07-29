@@ -30,12 +30,12 @@
       <div class="f wide" style="gap:.9rem">
         <label>Your order</label>
         <div class="picker">
-  @for (item of allItems; track item.n) {
-    <app-order-item
-      [item]="item"
-      [selected]="selectedItems().has(item.n)"
-      (toggled)="toggleItem($event)">
-    </app-order-item>
+    @for (item of allItems(); track item.n) {
+        <app-order-item
+        [item]="item"
+        [selected]="selectedItems().has(item.id)"
+        (toggled)="toggleItem($event)">
+        </app-order-item>
   }
 </div>
         @if (selectedItems().size === 0) {

@@ -14,7 +14,7 @@
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
     </button>
     <a class="nav__login" routerLink="/login">Log in</a>
-    <a class="nav__cta" routerLink="/signup">Sign up</a>
+    <a class="nav__cta" routerLink="/signup" appMagnetic>Sign up</a>
     <button class="burger" [class.x]="menuOpen()" (click)="toggleMenu()">
       <span></span><span></span>
     </button>
@@ -28,6 +28,6 @@
   <a routerLink="/" fragment="visit" (click)="menuOpen.set(false)">Visit</a>
   <div class="sheet__auth">
     <a class="nav__login" routerLink="/login">Log in</a>
-    <a class="nav__cta" routerLink="/signup">Sign up</a>
+   <a class="nav__cta" routerLink="/signup" appMagnetic>Sign up</a>
   </div>
 </div>

@@ -31,6 +31,9 @@
         @if (reserveForm.get('time')?.invalid && reserveForm.get('time')?.touched) {
           <span class="err">Pick a time</span>
         }
+        @if (reserveForm.errors?.['pastDateTime'] && reserveForm.get('time')?.touched) {
+        <span class="err">That time has already passed today</span>
+        }
       </div>
 
       <div class="f">

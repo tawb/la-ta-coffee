@@ -8,7 +8,18 @@
           <figcaption class="craft__tag">Iced, slow, single origin</figcaption>
         </figure>
         <div class="craft__body">
-          <h2>One bean. <em>One pour.</em></h2>
+          <h2 class="asm-host">
+            <span class="asm-a">
+              @for (c of charsA; track $index) {
+                <span class="ch">{{ c.ch }}</span>
+              }
+            </span>
+            <span class="asm-b">
+              @for (c of charsB; track $index) {
+                <span class="ch" [class.accent]="c.accent">{{ c.ch }}</span>
+              }
+            </span>
+          </h2>
           <p>We buy one lot at a time, direct from the grower, and roast it light enough that you taste the farm instead of the fire.</p>
           <p>When a lot runs out we do not replace it. We start again — a new origin, a new roast, the same patience.</p>
           <div class="craft__meta">

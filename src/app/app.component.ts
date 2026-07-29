@@ -13,6 +13,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import { CraftComponent } from './components/craft/craft.component';
 import { VisitComponent } from './components/visit/visit.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { CursorDirective } from './directives/cursor.directive';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -20,7 +21,7 @@ import { FooterComponent } from './components/footer/footer.component';
     RouterOutlet, NavComponent, HeroComponent,
     ResetModalComponent, AccountModalComponent, SearchModalComponent,
     RoomComponent,StatementComponent,GalleryComponent,MenuComponent,CraftComponent,
-    VisitComponent,FooterComponent
+    VisitComponent,FooterComponent,CursorDirective
   
   ],
   templateUrl: './app.component.html',

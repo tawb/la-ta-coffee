@@ -4,19 +4,23 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root'
 })
 export class OrderStateService {
-  lastConfirmationId = signal<string | null>(null);
+  private confirmationIds = signal<Set<string>>(new Set());
 
   createConfirmation(): string {
     const id = Math.random().toString(36).slice(2, 8).toUpperCase();
-    this.lastConfirmationId.set(id);
+    this.confirmationIds.update(current => {
+      const next = new Set(current);
+      next.add(id);
+      return next;
+    });
     return id;
   }
 
   isValidConfirmation(id: string): boolean {
-    return this.lastConfirmationId() === id;
+    return this.confirmationIds().has(id);
   }
 
   clear() {
-    this.lastConfirmationId.set(null);
+    this.confirmationIds.set(new Set());
   }
 }

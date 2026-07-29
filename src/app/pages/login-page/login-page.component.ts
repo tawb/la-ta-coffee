@@ -26,7 +26,7 @@ export class LoginPageComponent {
 
   onSubmit() {
     if (this.loginForm.invalid) return;
-    console.log('Login attempt:', this.loginForm.value);
+    console.log('Login attempt for:', this.loginForm.value.email);
     this.router.navigate(['/']);
   }
 }

@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .stmt {
   position: relative;
   height: 240vh;
@@ -23,8 +27,9 @@
   display: inline-block;
   color: rgba(234, 242, 251, .13);
   margin-right: .26em;
+  transition: color .12s linear;
 }
-.scrub w.lit {
+.scrub .w.lit {
   color: var(--cream);
 }
 .cnt {

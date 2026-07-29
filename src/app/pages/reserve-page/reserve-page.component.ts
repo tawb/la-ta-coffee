@@ -32,13 +32,13 @@ export class ReservePageComponent {
       }
     }
 
-    this.reserveForm = this.fb.group({
-      date: ['', [Validators.required, this.notInPast]],
-      time: ['', Validators.required],
-      party: ['', Validators.required],
-      name: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^0\d{1,2}[\s-]?\d{3}[\s-]?\d{4}$/)]]
-    });
+   this.reserveForm = this.fb.group({
+    date: ['', [Validators.required, this.notInPast]],
+    time: ['', Validators.required],
+    party: ['', Validators.required],
+    name: ['', Validators.required],
+    phone: ['', [Validators.required, Validators.pattern(/^0\d{1,2}[\s-]?\d{3}[\s-]?\d{4}$/)]]
+  }, { validators: this.notInPastDateTime });
   }
 
   notInPast(control: AbstractControl): ValidationErrors | null {
@@ -48,6 +48,17 @@ export class ReservePageComponent {
     today.setHours(0, 0, 0, 0);
     return selected >= today ? null : { pastDate: true };
   }
+  notInPastDateTime(group: AbstractControl): ValidationErrors | null {
+  const date = group.get('date')?.value;
+  const time = group.get('time')?.value;
+  if (!date || !time) return null;
+
+  const [year, month, day] = date.split('-').map(Number);
+  const [hour, minute] = time.split(':').map(Number);
+  const selected = new Date(year, month - 1, day, hour, minute);
+
+  return selected >= new Date() ? null : { pastDateTime: true };
+}
 
   onSubmit() {
     if (this.reserveForm.invalid) return;

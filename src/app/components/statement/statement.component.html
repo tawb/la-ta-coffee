@@ -2,9 +2,8 @@
   <span class="cnt">02 — Why</span>
   <div class="stmt__st">
     <p class="scrub">
-        <!-- index is just to give each one as an id to track---->
-      @for (word of words; track $index) {
-        <span class="w lit">{{ word }}</span>
+      @for (word of words; track $index; let i = $index) {
+        <span class="w" [class.lit]="i < litCount()">{{ word }}</span>
       }
     </p>
   </div>

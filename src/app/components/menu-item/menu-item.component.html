@@ -1,8 +1,8 @@
-<div class="row in" (click)="onOrder()">
-  <div>
+<button type="button" class="row in" (click)="onOrder()">
+  <span class="row__text">
     <span class="row__n">{{ item.n }}</span>
     <span class="row__note">{{ item.note }}</span>
-  </div>
+  </span>
   <span class="row__ld"></span>
   <span class="row__p">{{ item.p | price }}</span>
-</div>
+</button>
