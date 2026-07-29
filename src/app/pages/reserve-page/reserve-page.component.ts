@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { OrderStateService } from '../../services/order-state.service';
 import Swal from 'sweetalert2';
-
+import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 @Component({
   selector: 'app-reserve-page',
   standalone: true,
@@ -60,7 +61,7 @@ export class ReservePageComponent {
   return selected >= new Date() ? null : { pastDateTime: true };
 }
 
-  onSubmit() {
+  /*onSubmit() {
     if (this.reserveForm.invalid) return;
 
     this.submitting = true;
@@ -87,5 +88,33 @@ export class ReservePageComponent {
         });
       }
     });
-  }
+  }*/
+
+
+
+  // Real endpoint  once a backend exists and i do it :
+// POST /api/reservations
+// Expects: { date, time, party, name, phone }
+// Returns: { id, confirmedAt }
+onSubmit() {
+  if (this.reserveForm.invalid) return;
+
+  this.submitting = true;
+
+  // return this.http.post('/api/reservations', this.reserveForm.value).subscribe({ ... });
+
+  of(null).pipe(delay(600)).subscribe({
+    next: () => {
+      this.submitting = false;
+      Swal.fire({
+        title: 'Reservation confirmed!',
+        icon: 'success',
+        timer: 1400,
+        showConfirmButton: false
+      });
+      const id = this.orderState.createConfirmation();
+      this.router.navigate(['/confirmation', id]);
+    }
+  });
+}
 }

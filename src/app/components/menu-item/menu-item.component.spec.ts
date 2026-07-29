@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MenuItemComponent } from './menu-item.component';
 
 describe('MenuItemComponent', () => {
@@ -14,6 +13,7 @@ describe('MenuItemComponent', () => {
 
     fixture = TestBed.createComponent(MenuItemComponent);
     component = fixture.componentInstance;
+    component.item = { id: 'test-1', n: 'Test Drink', note: 'A test note', p: 20 };
     fixture.detectChanges();
   });
 

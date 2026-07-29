@@ -7,6 +7,8 @@ import { OrderStateService } from '../../services/order-state.service';
 import Swal from 'sweetalert2';
 import { OrderItemComponent } from '../../components/order-item/order-item.component';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 @Component({
   selector: 'app-order-page',
   standalone: true,
@@ -75,7 +77,7 @@ total = computed(() => {
   });
 }
 
-  onSubmit() {
+  /*onSubmit() {
     if (this.orderForm.invalid || this.selectedItems().size === 0) return;
 
     this.submitting = true;
@@ -108,5 +110,38 @@ total = computed(() => {
         });
       }
     });
-  }
+  }*/
+
+
+ // Real endpoint once a backend exists:
+// POST /api/orders
+// Expects: { time, name, items: string[], total }
+// Returns: { id, confirmedAt }
+onSubmit() {
+  if (this.orderForm.invalid || this.selectedItems().size === 0) return;
+
+  this.submitting = true;
+
+  const payload = {
+    ...this.orderForm.value,
+    items: Array.from(this.selectedItems()),
+    total: this.total()
+  };
+
+  // return this.http.post('/api/orders', payload).subscribe({ ... });
+
+  of(null).pipe(delay(600)).subscribe({
+    next: () => {
+      this.submitting = false;
+      Swal.fire({
+        title: 'Order placed!',
+        icon: 'success',
+        timer: 1400,
+        showConfirmButton: false
+      });
+      const id = this.orderState.createConfirmation();
+      this.router.navigate(['/confirmation', id]);
+    }
+  });
+}
 }
