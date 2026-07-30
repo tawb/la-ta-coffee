@@ -23,7 +23,7 @@ describe('SignupPageComponent', () => {
     await user.type(phoneInput, '123');
     await user.tab();
 
-    expect(screen.getByText('Enter a valid phone number')).toBeTruthy();
+    expect(screen.getByText('Phone must be in the format 05X-XXX-XXXX (e.g. 059 000 0000)')).toBeTruthy();
   });
 
   it('should keep submit disabled until the terms checkbox is checked', async () => {

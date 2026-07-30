@@ -152,3 +152,34 @@
 .cta:hover .cta__x {
   transform: translateX(6px);
 }
+@media (max-width: 700px) {
+  .vg {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .ctas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .visit {
+    padding-top: clamp(4rem, 10vh, 6rem);
+  }
+  .hours th, .hours td {
+    font-size: .82rem;
+  }
+  .addr {
+    font-size: 1.15rem;
+  }
+  .cta {
+    padding: 1.2rem 1.3rem;
+    gap: 1rem;
+  }
+  .cta__l {
+    font-size: 1.05rem;
+  }
+  .map {
+    margin-bottom: .5rem;
+  }
+}

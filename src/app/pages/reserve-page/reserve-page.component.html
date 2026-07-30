@@ -60,12 +60,12 @@
       <div class="f wide">
         <label>Phone</label>
         <input type="tel" formControlName="phone" placeholder="059 000 0000" />
-        @if (reserveForm.get('phone')?.invalid && reserveForm.get('phone')?.touched) {
-          <span class="err">Enter a valid phone number</span>
-        }
+       @if (reserveForm.get('phone')?.invalid && reserveForm.get('phone')?.touched) {
+  <span class="err">Phone must be in the format 05X-XXX-XXXX (e.g. 059 000 0000)</span>
+}
       </div>
 
-      <button type="submit" class="submit wide" [disabled]="reserveForm.invalid || submitting">
+      <button type="submit" class="submit wide" [disabled]="submitting">
   {{ submitting ? 'Submitting...' : 'Confirm reservation' }}
 </button>
     </form>

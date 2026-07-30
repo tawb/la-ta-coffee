@@ -83,3 +83,27 @@
     animation: none;
   }
 }
+.menu__state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--dim);
+  font-size: .9rem;
+}
+.menu__state--error {
+  color: var(--amber);
+}
+.menu__retry {
+  display: block;
+  margin: 1rem auto 0;
+  padding: .6rem 1.4rem;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  transition: background-color .4s var(--e), color .4s var(--e);
+}
+.menu__retry:hover {
+  background: var(--amber);
+  color: var(--ink);
+}

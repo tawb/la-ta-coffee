@@ -87,10 +87,13 @@
 }
 .craft__meta {
   display: flex;
-  gap: 2.6rem;
+  flex-wrap: wrap;
+  gap: 1.6rem 2.6rem;
   margin-top: 2.4rem;
   padding-top: 1.8rem;
   border-top: 1px solid var(--ghost);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .craft__meta div {
   flex: none;
@@ -124,4 +127,14 @@
   vertical-align: middle;
   margin-right: .7rem;
   opacity: .6;
+}
+@media (max-width: 500px) {
+  .asm-host {
+    font-size: clamp(1.8rem, 8vw, 3rem);
+    height: 1.1em;
+  }
+  .craft__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
