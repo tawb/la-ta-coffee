@@ -25,8 +25,16 @@ export class SearchModalComponent {
 
   constructor(
     public modalService: ModalService,
-    private menuService: MenuService
+    public menuService: MenuService
   ) {
+    this.loadMenu();
+
+    this.searchControl.valueChanges.subscribe(value => {
+      this.query.set(value ?? '');
+    });
+  }
+
+  loadMenu() {
     this.menuService.getMenu().subscribe({
       next: () => {
         this.allItems = this.menuService.getAllItemsFlat();
@@ -35,9 +43,9 @@ export class SearchModalComponent {
         console.error('Could not load menu for search:', err);
       }
     });
+  }
 
-    this.searchControl.valueChanges.subscribe(value => {
-      this.query.set(value ?? '');
-    });
+  retryLoad() {
+    this.loadMenu();
   }
 }
