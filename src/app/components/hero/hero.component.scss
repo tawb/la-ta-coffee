@@ -81,6 +81,15 @@
   opacity: 1;
   transform: scale(1);
 }
+/* replays as a soft breathing pulse each time the hero re-enters the viewport */
+.hero__glow.pulse {
+  animation: glowPulse 1.8s var(--e);
+}
+@keyframes glowPulse {
+  0%   { opacity: .55; transform: scale(.88); }
+  55%  { opacity: 1;   transform: scale(1.07); }
+  100% { opacity: 1;   transform: scale(1); }
+}
 
 .hero__drinks {
   position: relative;
