@@ -12,6 +12,8 @@ describe('LoginPageComponent', () => {
     });
 
     const button = screen.getByRole('button', { name: /log in/i }) as HTMLButtonElement;
+    //The i after the closing slash 
+    // is a flag meaning "case-insensitive"
     expect(button.disabled).toBe(true);
   });
 
@@ -43,7 +45,7 @@ describe('LoginPageComponent', () => {
     const emailInput = screen.getByPlaceholderText('you@example.com');
 
     await user.type(emailInput, 'not-an-email');
-    await user.tab();
+    await user.tab();//marks the email field as touched
 
     expect(screen.getByText('Enter a valid email')).toBeTruthy();
   });

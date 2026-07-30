@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GalleryComponent } from './gallery.component';
 
 describe('GalleryComponent', () => {
@@ -9,8 +8,7 @@ describe('GalleryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GalleryComponent]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GalleryComponent);
     component = fixture.componentInstance;
@@ -19,5 +17,18 @@ describe('GalleryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have exactly 10 cups', () => {
+    expect(component.cups.length).toBe(10);
+  });
+
+  it('should correctly compute the sprite position for the first and last slot', () => {
+    expect(component.slotPosition(0)).toBe('0%');
+    expect(component.slotPosition(9)).toBe('100%');
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });
