@@ -2,18 +2,18 @@ import { Component, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ModalService } from '../../services/modal.service';
 import { MenuService, MenuItem } from '../../services/menu.service';
-
+import { PricePipe } from '../../pipes/price.pipe';
 @Component({
   selector: 'app-search-modal',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,PricePipe],
   templateUrl: './search-modal.component.html',
   styleUrl: './search-modal.component.scss'
 })
 export class SearchModalComponent {
-  searchControl = new FormControl('');//a FormGroup is a collection of FormControls
+  searchControl = new FormControl('');
   query = signal('');
-  allItems: MenuItem[];
+  allItems: MenuItem[] = [];
 
   filteredItems = computed(() => {
     const q = this.query().toLowerCase().trim();
@@ -25,13 +25,27 @@ export class SearchModalComponent {
 
   constructor(
     public modalService: ModalService,
-    private menuService: MenuService
+    public menuService: MenuService
   ) {
-    //form input changes (Observable) → update our signal, so computed() can react to it
-    this.allItems = this.menuService.getAllItemsFlat();
-    //when the value changes an this comes from the form control 
+    this.loadMenu();
+
     this.searchControl.valueChanges.subscribe(value => {
-      this.query.set(value ?? '');//value or null
+      this.query.set(value ?? '');
     });
+  }
+
+  loadMenu() {
+    this.menuService.getMenu().subscribe({
+      next: () => {
+        this.allItems = this.menuService.getAllItemsFlat();
+      },
+      error: (err) => {
+        console.error('Could not load menu for search:', err);
+      }
+    });
+  }
+
+  retryLoad() {
+    this.loadMenu();
   }
 }

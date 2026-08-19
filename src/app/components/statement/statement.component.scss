@@ -1,0 +1,53 @@
+:host {
+  display: block;
+}
+
+.stmt {
+  position: relative;
+  height: 240vh;
+}
+.stmt__st {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--gut);
+  background: radial-gradient(75% 55% at 50% 46%, rgba(58, 160, 224, .18), transparent 68%);
+}
+.scrub {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 3.9vw, 3.1rem);
+  line-height: 1.32;
+  margin: 0;
+  max-width: 22ch;
+  text-align: center;
+}
+.scrub .w {
+  display: inline-block;
+  color: rgba(234, 242, 251, .13);
+  margin-right: .26em;
+  transition: color .12s linear;
+}
+.scrub .w.lit {
+  color: var(--cream);
+}
+.cnt {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2.4rem);
+  left: clamp(1rem, 3vw, 2.4rem);
+  z-index: 5;
+  font-size: .58rem;
+  letter-spacing: .3em;
+  color: var(--faint);
+}
+.cnt::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--amber);
+  vertical-align: middle;
+  margin-right: .7rem;
+  opacity: .6;
+}

@@ -72,3 +72,41 @@ a {
   background: var(--amber);
   color: var(--ink);
 }
+.rv {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .9s var(--e), transform .9s var(--e);
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+[appMagnetic] {
+  transition: transform .3s var(--e);
+  display: inline-block;
+}
+.custom-cursor {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: var(--amber);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform .15s ease-out;
+}
+
+@media (hover: none) {
+  .custom-cursor {
+    display: none;
+  }
+}
+body {
+  overflow-x: hidden;  /* this was already here from day one, never caused problems */
+}
+
+app-root {
+  display: block;
+  width: 100%;
+}

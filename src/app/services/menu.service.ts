@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
-
+import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap, catchError, throwError, shareReplay } from 'rxjs';
 export interface MenuItem {
+  id: string;
   n: string;
   note: string;
   p: number;
@@ -15,38 +17,33 @@ export interface MenuCategory {
   providedIn: 'root'
 })
 export class MenuService {
-  private menu: MenuCategory[] = [
-    { cat: 'Filter', items: [
-      { n: 'Yirgacheffe', note: 'Ethiopia · washed · jasmine, bergamot', p: 20 },
-      { n: 'Kirinyaga', note: 'Kenya · washed · blackcurrant', p: 22 },
-      { n: 'Nariño', note: 'Colombia · honey · red plum', p: 20 }
-    ]},
-    { cat: 'Espresso', items: [
-      { n: 'Espresso', note: 'Single origin, whatever is open', p: 10 },
-      { n: 'Cortado', note: 'Equal parts', p: 14 },
-      { n: 'Flat White', note: 'Six ounces', p: 16 },
-      { n: 'Mocha', note: 'Dark, not sweet', p: 18 }
-    ]},
-    { cat: 'Cold', items: [
-      { n: 'Cold Brew', note: 'Eighteen hours', p: 20 },
-      { n: 'Iced Latte', note: 'Six ounces, over ice', p: 18 }
-    ]},
-    { cat: 'Matcha', items: [
-      { n: 'Matcha Latte', note: 'Ceremonial grade, Uji', p: 22 },
-      { n: 'Chocolate Matcha', note: 'Layered, not stirred', p: 24 },
-      { n: 'Matcha Strawberry', note: 'Seasonal', p: 24 },
-      { n: 'Taro Matcha', note: 'Root and leaf', p: 24 },
-      { n: 'Banana Matcha', note: 'Blended cold', p: 24 },
-      { n: 'Caramel Matcha', note: 'Salted', p: 24 },
-      { n: 'Mango Matcha', note: 'Cold only', p: 24 }
-    ]}
-  ];
+  private menuUrl = '/assets/menu.json';
 
-  getMenu(): MenuCategory[] {
-    return this.menu;
-  }
+  menu = signal<MenuCategory[]>([]);
+  isLoading = signal(false);
+  loadError = signal<string | null>(null);
+
+  constructor(private http: HttpClient) {}
+
+  getMenu(): Observable<MenuCategory[]> {
+  this.isLoading.set(true);
+  this.loadError.set(null);
+
+  return this.http.get<MenuCategory[]>(this.menuUrl).pipe(
+    tap(data => {
+      this.menu.set(data);
+      this.isLoading.set(false);
+    }),
+    shareReplay(1),
+    catchError(err => {
+      this.isLoading.set(false);
+      this.loadError.set('Could not load the menu. Please try again.');
+      return throwError(() => err);
+    })
+  );
+}
 
   getAllItemsFlat(): MenuItem[] {
-    return this.menu.flatMap(category => category.items);//One single, flat list of every item across every category
+    return this.menu().flatMap(category => category.items);
   }
 }

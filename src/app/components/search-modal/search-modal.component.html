@@ -12,18 +12,27 @@
     </div>
 
     <div class="results">
-      @if (query() && filteredItems().length === 0) {
-        <p class="res__empty">No matches for "{{ query() }}"</p>
-      }
-      @for (item of filteredItems(); track item.n) {
-        <div class="res">
-          <div>
-            <b>{{ item.n }}</b><br>
-            <span>{{ item.note }}</span>
-          </div>
-          <span class="res__p">₪{{ item.p }}</span>
+  @if (menuService.isLoading()) {
+    <p class="res__state">Loading...</p>
+  } @else if (menuService.loadError()) {
+    <p class="res__state res__state--error">
+      Could not load items.
+      <button class="res__retry" (click)="retryLoad()">Try again</button>
+    </p>
+  } @else {
+    @if (query() && filteredItems().length === 0) {
+      <p class="res__empty">No matches for "{{ query() }}"</p>
+    }
+    @for (item of filteredItems(); track item.n) {
+      <div class="res">
+        <div>
+          <b>{{ item.n }}</b><br>
+          <span>{{ item.note }}</span>
         </div>
-      }
-    </div>
+        <span class="res__p">{{ item.p | price }}</span>
+      </div>
+    }
+  }
+</div>
   </div>
 </div>

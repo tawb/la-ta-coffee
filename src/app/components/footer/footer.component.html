@@ -1,0 +1,55 @@
+<footer class="foot">
+  <div class="foot__top">
+    <div class="foot__col foot__brand">
+      <p class="foot__logo">La&nbsp;Ta</p>
+      <p class="foot__tag">Twelve seats. One table. Roasted this week, gone when it's gone.</p>
+    </div>
+
+    <div class="foot__col">
+      <p class="foot__h">Explore</p>
+      <a routerLink="/" fragment="room">The Room</a>
+      <a routerLink="/" fragment="cups">Cups</a>
+      <a routerLink="/" fragment="menu">Menu</a>
+      <a routerLink="/" fragment="visit">Visit</a>
+    </div>
+
+    <div class="foot__col">
+      <p class="foot__h">Visit Us</p>
+      <p class="foot__line">Al-Tireh Street, Ramallah</p>
+      <p class="foot__line">Sun–Thu 07:00–19:00</p>
+      <p class="foot__line">Fri 08:00–14:00 · Sat 08:00–20:00</p>
+    </div>
+  </div>
+
+  <div class="foot__news">
+    <div class="foot__news-in">
+      <p class="foot__news-h" appScrollReveal>Join the list</p>
+      <p class="foot__news-sub">One email a week. New roasts, new seats, nothing else.</p>
+
+      <form #newsletterForm="ngForm" (ngSubmit)="onSubscribe(newsletterForm)" class="foot__form">
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          email
+          placeholder="you@example.com"
+          #emailField="ngModel"
+        />
+        <button type="submit" [disabled]="newsletterForm.invalid" appMagnetic>Subscribe</button>
+      </form>
+
+      @if (newsletterForm.invalid && emailField.touched && !submitted) {
+        <span class="foot__err">Enter a valid email</span>
+      }
+      @if (submitted) {
+        <span class="foot__ok">You're on the list — welcome.</span>
+      }
+    </div>
+  </div>
+
+  <div class="foot__bottom">
+    <span>© {{ year }} La Ta Coffee — Al-Tireh, Ramallah</span>
+    <span>Est. 2019</span>
+  </div>
+</footer>

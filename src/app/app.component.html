@@ -1,6 +1,18 @@
 <app-nav></app-nav>
-<app-login-modal></app-login-modal>
-<app-signup-modal></app-signup-modal>
+<router-outlet></router-outlet>
+
+@if (isHomePage()) {
+  <app-hero></app-hero>
+  <app-room></app-room>
+  <app-statement></app-statement>
+  <app-gallery></app-gallery>
+  <app-menu></app-menu>
+  <app-craft></app-craft>
+  <app-visit></app-visit>
+  <app-footer></app-footer>
+}
+
 <app-reset-modal></app-reset-modal>
 <app-account-modal></app-account-modal>
 <app-search-modal></app-search-modal>
+<div class="custom-cursor" appCursor></div>
