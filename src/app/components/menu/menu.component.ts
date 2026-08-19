@@ -29,8 +29,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  onItemOrdered(name: string) {
-    console.log('Wants to order:', name);
-    this.router.navigate(['/order']);
-  }
+ onItemOrdered(id: string) {
+  this.router.navigate(['/order'], { queryParams: { preselect: id } });
+}
 }

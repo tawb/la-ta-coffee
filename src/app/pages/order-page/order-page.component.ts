@@ -6,6 +6,7 @@ import { MenuService, MenuItem } from '../../services/menu.service';
 import { OrderStateService } from '../../services/order-state.service';
 import Swal from 'sweetalert2';
 import { OrderItemComponent } from '../../components/order-item/order-item.component';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-order-page',
   standalone: true,
@@ -15,33 +16,38 @@ import { OrderItemComponent } from '../../components/order-item/order-item.compo
 })
 export class OrderPageComponent {
   orderForm: FormGroup;
-  allItems: MenuItem[] = [];
+  allItems = signal<MenuItem[]>([]);
   timeSlots: string[] = [];
   selectedItems = signal<Set<string>>(new Set());
   submitting = false;
 
-  total = computed(() => {
-    const selected = this.selectedItems();
-    return this.allItems
-      .filter(item => selected.has(item.n))
-      .reduce((sum, item) => sum + item.p, 0);
-  });
+total = computed(() => {
+  const selected = this.selectedItems();
+  return this.allItems()
+    .filter(item => selected.has(item.id))
+    .reduce((sum, item) => sum + item.p, 0);
+});
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private http: HttpClient,
     private menuService: MenuService,
+    private route: ActivatedRoute,
     private orderState: OrderStateService
   ) {
     this.menuService.getMenu().subscribe({
-      next: () => {
-        this.allItems = this.menuService.getAllItemsFlat();
-      },
-      error: (err) => {
-        console.error('Could not load menu for order:', err);
+    next: () => {
+      this.allItems.set(this.menuService.getAllItemsFlat());
+      const preselectId = this.route.snapshot.queryParamMap.get('preselect');
+      if (preselectId) {
+        this.toggleItem(preselectId);
       }
-    });
+    },
+    error: (err) => {
+      console.error('Could not load menu for order:', err);
+    }
+  });
 
     for (let hh = 7; hh <= 18; hh++) {
       for (let mm = 0; mm < 60; mm += 30) {
@@ -57,17 +63,17 @@ export class OrderPageComponent {
     });
   }
 
-  toggleItem(name: string) {
-    this.selectedItems.update(current => {
-      const next = new Set(current);
-      if (next.has(name)) {
-        next.delete(name);
-      } else {
-        next.add(name);
-      }
-      return next;
-    });
-  }
+  toggleItem(id: string) {
+  this.selectedItems.update(current => {
+    const next = new Set(current);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    return next;
+  });
+}
 
   onSubmit() {
     if (this.orderForm.invalid || this.selectedItems().size === 0) return;

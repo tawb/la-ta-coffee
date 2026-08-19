@@ -1,4 +1,10 @@
 .row {
+width: 100%;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   display: flex;
   align-items: baseline;
   padding: .85rem .9rem;
@@ -59,4 +65,7 @@
 .row:hover .row__p {
   transform: translateX(6px);
   color: var(--amber);
+}
+.row__text {
+  display: block;
 }

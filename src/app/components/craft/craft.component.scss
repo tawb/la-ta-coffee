@@ -30,14 +30,14 @@
 .craft__fig {
   position: relative;
   aspect-ratio: 4 / 5;
-  max-height: 70svh;
+  max-height: 75svh;
   width: auto;
   overflow: hidden;
   background: var(--ink2);
   display: grid;
   place-items: center;
   margin: 0 auto;
-  border-radius: 20px;
+  border-radius: 50px;
 }
 .craft__fig img {
   width: 100%;
@@ -54,17 +54,30 @@
   text-transform: uppercase;
   color: var(--faint);
 }
-.craft__body h2 {
+
+.asm-host {
+  position: relative;
+  height: 1.3em;
   font-family: var(--serif);
   font-weight: 400;
   font-size: clamp(2.4rem, 5.4vw, 4.6rem);
   line-height: 1.02;
   margin: 0 0 1.8rem;
 }
-.craft__body h2 em {
+.asm-a, .asm-b {
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+}
+.asm-a .ch, .asm-b .ch {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+.asm-b .ch.accent {
   font-style: italic;
   color: var(--amber);
 }
+
 .craft__body p {
   color: var(--dim);
   line-height: 1.9;

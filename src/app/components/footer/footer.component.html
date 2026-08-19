@@ -23,7 +23,7 @@
 
   <div class="foot__news">
     <div class="foot__news-in">
-      <p class="foot__news-h">Join the list</p>
+      <p class="foot__news-h" appScrollReveal>Join the list</p>
       <p class="foot__news-sub">One email a week. New roasts, new seats, nothing else.</p>
 
       <form #newsletterForm="ngForm" (ngSubmit)="onSubscribe(newsletterForm)" class="foot__form">
@@ -36,7 +36,7 @@
           placeholder="you@example.com"
           #emailField="ngModel"
         />
-        <button type="submit" [disabled]="newsletterForm.invalid">Subscribe</button>
+        <button type="submit" [disabled]="newsletterForm.invalid" appMagnetic>Subscribe</button>
       </form>
 
       @if (newsletterForm.invalid && emailField.touched && !submitted) {

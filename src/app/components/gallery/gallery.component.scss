@@ -1,6 +1,6 @@
 .gal {
   position: relative;
-  height: 100svh;
+  height: 250vh;
 }
 .gal__st {
   position: sticky;
@@ -27,23 +27,22 @@
   display: flex;
   gap: clamp(1.5rem, 4vw, 4rem);
   padding-inline: 12vw;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
   padding-top: 8rem;
+  will-change: transform;
 }
 .gal__c {
   flex: none;
   width: clamp(140px, 15vw, 235px);
   text-align: center;
-  scroll-snap-align: center;
 }
 .gal__img {
   width: 100%;
   aspect-ratio: 340 / 500;
   background-image: url('/assets/atlas.webp');
   background-repeat: no-repeat;
-  background-size: 1000% 100%;
-  filter: drop-shadow(0 26px 44px rgba(0, 0, 0, .6)) drop-shadow(0 4px 14px rgba(58, 160, 224, .22));
+  background-size: auto 100%;
+  will-change: transform;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, .5));
   transition: filter .6s var(--e);
 }
 .gal__c:hover .gal__img {
@@ -64,6 +63,20 @@
   color: var(--faint);
   margin-top: .3rem;
 }
+.gal__skip {
+  position: absolute;
+  right: var(--gut);
+  bottom: 2rem;
+  z-index: 3;
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: color .4s var(--e);
+}
+.gal__skip:hover {
+  color: var(--amber);
+}
 .cnt {
   position: absolute;
   top: clamp(1rem, 3vw, 2.4rem);
@@ -82,21 +95,4 @@
   vertical-align: middle;
   margin-right: .7rem;
   opacity: .6;
-}
-html {
-  scroll-behavior: smooth;
-}
-.gal__skip {
-  position: absolute;
-  right: var(--gut);
-  bottom: 2rem;
-  z-index: 3;
-  font-size: .6rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--dim);
-  transition: color .4s var(--e);
-}
-.gal__skip:hover {
-  color: var(--amber);
 }

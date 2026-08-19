@@ -27,7 +27,7 @@ export class SignupPageComponent {
 
   onSubmit() {
     if (this.signupForm.invalid) return;
-    console.log('Signup:', this.signupForm.value);
+    console.log('Signup for:', this.signupForm.value.email);
     this.router.navigate(['/']);
   }
 }

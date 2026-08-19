@@ -52,6 +52,26 @@
   font-style: italic;
   color: var(--amber);
 }
+.lines .ln {
+  display: block;
+  overflow: hidden;
+  padding-block: .06em;
+}
+.lines .ln i {
+  display: block;
+  font-style: normal;
+  transform: translateY(115%) rotate(4deg);
+  opacity: 0;
+  transition: transform 1.1s var(--e), opacity .9s var(--e);
+}
+.lines.in .ln i {
+  transform: none;
+  opacity: 1;
+}
+.lines .ln i em {
+  font-style: italic;
+  color: var(--amber);
+}
 .cnt {
   position: absolute;
   top: clamp(1rem, 3vw, 2.4rem);

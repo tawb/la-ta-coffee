@@ -13,7 +13,7 @@ export class MenuItemComponent {
   @Input() item!: MenuItem;//The ! is the non-null assertion operator
   @Output() ordered = new EventEmitter<string>();
 
-  onOrder() {
-    this.ordered.emit(this.item.n);
-  }
+ onOrder() {
+  this.ordered.emit(this.item.id);
+}
 }

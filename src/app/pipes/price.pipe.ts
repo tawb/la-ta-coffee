@@ -6,6 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PricePipe implements PipeTransform {
   transform(value: number): string {
-    return '₪' + value;
+    return '₪' + value.toFixed(2);
   }
 }

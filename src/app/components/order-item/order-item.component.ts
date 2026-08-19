@@ -15,6 +15,6 @@ export class OrderItemComponent {
   toggled = output<string>();
 
   onToggle() {
-    this.toggled.emit(this.item().n);
-  }
+  this.toggled.emit(this.item().id);
+}
 }

@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 
 export interface MenuItem {
+  id: string;
   n: string;
   note: string;
   p: number;
@@ -18,24 +19,31 @@ export interface MenuCategory {
 })
 export class MenuService {
   private menuUrl = '/assets/menu.json';
-  private cachedMenu: MenuCategory[] = [];
+
+  menu = signal<MenuCategory[]>([]);
+  isLoading = signal(false);
+  loadError = signal<string | null>(null);
 
   constructor(private http: HttpClient) {}
 
   getMenu(): Observable<MenuCategory[]> {
+    this.isLoading.set(true);
+    this.loadError.set(null);
+
     return this.http.get<MenuCategory[]>(this.menuUrl).pipe(
-      map(data => {
-        this.cachedMenu = data;
-        return data;
+      tap(data => {
+        this.menu.set(data);
+        this.isLoading.set(false);
       }),
       catchError(err => {
-        console.error('Failed to load menu:', err);
-        return of([]);
+        this.isLoading.set(false);
+        this.loadError.set('Could not load the menu. Please try again.');
+        return throwError(() => err);
       })
     );
   }
 
   getAllItemsFlat(): MenuItem[] {
-    return this.cachedMenu.flatMap(category => category.items);
+    return this.menu().flatMap(category => category.items);
   }
 }
