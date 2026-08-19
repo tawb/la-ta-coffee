@@ -102,3 +102,11 @@ a {
     display: none;
   }
 }
+body {
+  overflow-x: hidden;  /* this was already here from day one, never caused problems */
+}
+
+app-root {
+  display: block;
+  width: 100%;
+}

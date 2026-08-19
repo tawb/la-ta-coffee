@@ -118,8 +118,10 @@ total = computed(() => {
 // Expects: { time, name, items: string[], total }
 // Returns: { id, confirmedAt }
 onSubmit() {
-  if (this.orderForm.invalid || this.selectedItems().size === 0) return;
-
+  if (this.orderForm.invalid || this.selectedItems().size === 0) {
+    this.orderForm.markAllAsTouched();
+    return;
+  }
   this.submitting = true;
 
   const payload = {

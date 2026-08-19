@@ -41,4 +41,5 @@ describe('OrderStateService', () => {
 
     expect(service.isValidConfirmation(id)).toBe(false);
   });
+  
 });

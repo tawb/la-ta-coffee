@@ -7,12 +7,18 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('ReservePageComponent', () => {
   const providers = [provideRouter([]), provideHttpClient(), provideHttpClientTesting()];
 
-  it('should disable submit when the form is empty', async () => {
-    await render(ReservePageComponent, { providers });
+  it('should reveal all validation errors when submitting an empty form', async () => {
+  const user = userEvent.setup();
+  await render(ReservePageComponent, { providers });
 
-    const button = screen.getByRole('button', { name: /confirm reservation/i }) as HTMLButtonElement;
-    expect(button.disabled).toBe(true);
-  });
+  const button = screen.getByRole('button', { name: /confirm reservation/i });
+  await user.click(button);
+
+  expect(screen.getByText('Date is required')).toBeTruthy();
+  expect(screen.getByText('Pick a time')).toBeTruthy();
+  expect(screen.getByText('Party size is required')).toBeTruthy();
+  expect(screen.getByText('Name is required')).toBeTruthy();
+});
 
   it('should reject a past date', async () => {
     const { fixture } = await render(ReservePageComponent, { providers });

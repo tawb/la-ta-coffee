@@ -1,12 +1,15 @@
 .gal {
   position: relative;
   height: 250vh;
+  overflow-x: clip;
+  width: 100%;
 }
 .gal__st {
   position: sticky;
   top: 0;
   height: 100svh;
-  overflow: hidden;
+  overflow: hidden;  
+  overflow-x: clip;  
   display: flex;
   flex-direction: column;
   justify-content: center;

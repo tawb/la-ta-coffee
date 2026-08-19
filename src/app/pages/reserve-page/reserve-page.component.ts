@@ -97,7 +97,11 @@ export class ReservePageComponent {
 // Expects: { date, time, party, name, phone }
 // Returns: { id, confirmedAt }
 onSubmit() {
-  if (this.reserveForm.invalid) return;
+   if (this.reserveForm.invalid) {
+    this.reserveForm.markAllAsTouched();
+    return;
+  }
+  
 
   this.submitting = true;
 

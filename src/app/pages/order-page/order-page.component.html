@@ -48,8 +48,8 @@
         <span>₪{{ total() }}</span>
       </div>
 
-      <button type="submit" class="submit wide" [disabled]="orderForm.invalid || selectedItems().size === 0 || submitting">
-  {{ submitting ? 'Placing order...' : 'Place order' }}
+      <button type="submit" class="submit wide" [disabled]="submitting">
+        Submit
 </button>
     </form>
   </div>

@@ -1,4 +1,7 @@
-import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import {
+  Component, OnInit, AfterViewInit, OnDestroy,
+  signal, computed, ElementRef, ViewChild
+} from '@angular/core';
 
 interface HeroDrink {
   name: string;
@@ -14,7 +17,10 @@ interface HeroDrink {
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.scss'
 })
-export class HeroComponent implements OnInit, OnDestroy {
+export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('heroSection', { static: true }) heroSection!: ElementRef<HTMLElement>;
+  @ViewChild('glowEl') glowEl!: ElementRef<HTMLElement>;
+
   drinks: HeroDrink[] = [
     { name: 'Cold Brew', note: 'Eighteen hours', bg: '#071528', wm: 'rgba(255,255,255,.10)' },
     { name: 'Iced Latte', note: 'Six ounces', bg: '#123f74', wm: 'rgba(255,255,255,.13)' },
@@ -40,6 +46,8 @@ export class HeroComponent implements OnInit, OnDestroy {
   private timer: ReturnType<typeof setInterval> | undefined;
   //timeout runs only once
   private swapTimeout: ReturnType<typeof setTimeout> | undefined;
+  // observer watches whether the hero is visible on screen, to pause/resume rotation and replay the glow
+  private observer?: IntersectionObserver;
 
   ngOnInit() {
     setTimeout(() => this.heroOn.set(true), 50);
@@ -47,9 +55,25 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.restartTimer();
   }
 
+  ngAfterViewInit() {
+    this.observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          this.restartTimer();   // resume rotation once back on screen
+          this.retriggerGlow();  // replay the glow-pulse from the start
+        } else {
+          clearInterval(this.timer); // pause rotation while off-screen
+        }
+      },
+      { threshold: 0.15 }
+    );
+    this.observer.observe(this.heroSection.nativeElement);
+  }
+
   ngOnDestroy() {
     clearInterval(this.timer);
     clearTimeout(this.swapTimeout);
+    this.observer?.disconnect();
   }
 
   private paint(i: number) {
@@ -67,6 +91,14 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.timer = setInterval(() => {
       this.paint((this.currentIndex() + 1) % this.drinks.length);
     }, 2120);
+  }
+
+  private retriggerGlow() {
+    const el = this.glowEl?.nativeElement;
+    if (!el) return;
+    el.classList.remove('pulse');
+    void el.offsetWidth; // force reflow so the animation can restart from 0
+    el.classList.add('pulse');
   }
 
   goTo(index: number) {

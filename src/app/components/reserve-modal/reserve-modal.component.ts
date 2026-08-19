@@ -39,7 +39,7 @@ notInPast(control: AbstractControl): ValidationErrors | null {
   if (!control.value) return null;
 
   const [year, month, day] = control.value.split('-').map(Number);
-  const selected = new Date(year, month - 1, day);//month - 1 is because : JavaScript's Date uses zero-indexed months
+  const selected = new Date(year, month - 1, day);//month - 1 is because: JavaScript's Date uses zero-indexed months
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

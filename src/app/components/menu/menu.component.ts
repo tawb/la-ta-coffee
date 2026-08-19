@@ -14,11 +14,15 @@ export class MenuComponent implements OnInit {
   categories: MenuCategory[] = [];
 
   constructor(
-    private menuService: MenuService,
+    public menuService: MenuService,
     private router: Router
   ) {}
 
   ngOnInit() {
+    this.loadMenu();
+  }
+
+  loadMenu() {
     this.menuService.getMenu().subscribe({
       next: (data) => {
         this.categories = data;
@@ -29,7 +33,11 @@ export class MenuComponent implements OnInit {
     });
   }
 
- onItemOrdered(id: string) {
-  this.router.navigate(['/order'], { queryParams: { preselect: id } });
-}
+  retryLoad() {
+    this.loadMenu();
+  }
+
+  onItemOrdered(id: string) {
+    this.router.navigate(['/order'], { queryParams: { preselect: id } });
+  }
 }
