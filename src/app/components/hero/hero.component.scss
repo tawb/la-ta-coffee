@@ -46,11 +46,11 @@
   font-family: var(--serif);
   font-weight: 400;
   line-height: .82;
-  font-size: clamp(5rem, 19vw, 15rem);
   letter-spacing: .02em;
   pointer-events: none;
   user-select: none;
   transition: color 1.05s cubic-bezier(.65, 0, .35, 1);
+  font-size: clamp(4rem, 18vw, 11rem);
 }
 .hero__wm span {
   display: block;

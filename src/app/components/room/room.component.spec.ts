@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RoomComponent } from './room.component';
 
 describe('RoomComponent', () => {
@@ -9,8 +8,7 @@ describe('RoomComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RoomComponent]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RoomComponent);
     component = fixture.componentInstance;
@@ -19,5 +17,15 @@ describe('RoomComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render the headline text', () => {
+    const heading: HTMLElement = fixture.nativeElement.querySelector('.room-h');
+    expect(heading.textContent).toContain('Different pace');
+    expect(heading.textContent).toContain('One table');
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });

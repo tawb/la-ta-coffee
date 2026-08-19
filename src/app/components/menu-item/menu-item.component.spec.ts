@@ -8,16 +8,33 @@ describe('MenuItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MenuItemComponent]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MenuItemComponent);
     component = fixture.componentInstance;
-    component.item = { id: 'test-1', n: 'Test Drink', note: 'A test note', p: 20 };
+    component.item = { id: 'test-1', n: 'Cortado', note: 'Equal parts', p: 14 };
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display the item name and formatted price', () => {
+    const nameEl: HTMLElement = fixture.nativeElement.querySelector('.row__n');
+    const priceEl: HTMLElement = fixture.nativeElement.querySelector('.row__p');
+
+    expect(nameEl.textContent).toContain('Cortado');
+    expect(priceEl.textContent).toContain('₪14.00');
+  });
+
+  it('should emit the item id when clicked', () => {
+    let emittedId: string | undefined;
+    component.ordered.subscribe((id: string) => { emittedId = id; });
+
+    const button: HTMLElement = fixture.nativeElement.querySelector('button');
+    button.click();
+
+    expect(emittedId).toBe('test-1');
   });
 });

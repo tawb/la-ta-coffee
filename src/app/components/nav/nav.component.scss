@@ -181,3 +181,35 @@
   color: var(--cream);
   border-color: var(--faint);
 }
+@media (max-width: 760px) {
+  .nav__l {
+    display: none;
+  }
+  .burger {
+    display: block;
+  }
+  .nav__l {
+    display: none;
+  }
+  .burger {
+    display: block;
+  }
+  .nav__r {
+    gap: 0.5rem;
+  }
+  .nav__ic {
+    width: 28px;
+    height: 28px;
+  }
+  .nav__login {
+    display: none;
+  }
+  .nav__cta {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.58rem;
+  }
+}
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
