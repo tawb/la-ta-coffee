@@ -1,0 +1,62 @@
+.row {
+  display: flex;
+  align-items: baseline;
+  padding: .85rem .9rem;
+  margin: 0 -.9rem;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color .55s var(--e);
+}
+.row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--amber);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform .55s var(--e);
+}
+.row:hover::before {
+  transform: scaleY(1);
+  transform-origin: top;
+}
+.row:hover {
+  background: linear-gradient(90deg, rgba(58, 160, 224, .12), rgba(58, 160, 224, .03) 60%, transparent);
+}
+.row__n {
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.row__note {
+  display: block;
+  font-family: var(--sans);
+  font-size: .63rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: .22rem;
+  white-space: normal;
+}
+.row__ld {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  margin: 0 1rem;
+  border-bottom: 1px dotted var(--faint);
+  transform: translateY(-.3em);
+}
+.row__p {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  white-space: nowrap;
+  transition: transform .55s var(--e), color .55s var(--e);
+}
+.row:hover .row__p {
+  transform: translateX(6px);
+  color: var(--amber);
+}

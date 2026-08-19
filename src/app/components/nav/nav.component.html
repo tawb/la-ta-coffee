@@ -1,10 +1,10 @@
 <nav class="nav">
   <a href="#top" class="nav__m">La&nbsp;Ta</a>
   <ul class="nav__l">
-    <li><a href="#room">The Room</a></li>
-    <li><a href="#cups">Cups</a></li>
-    <li><a href="#menu">Menu</a></li>
-    <li><a href="#visit">Visit</a></li>
+    <li><a routerLink="/" fragment="room">The Room</a></li>
+    <li><a routerLink="/" fragment="cups">Cups</a></li>
+    <li><a routerLink="/" fragment="menu">Menu</a></li>
+    <li><a routerLink="/" fragment="visit">Visit</a></li>
   </ul>
   <div class="nav__r">
     <button class="nav__ic" (click)="modalService.open('search')" aria-label="Search">
@@ -22,10 +22,10 @@
 </nav>
 
 <div class="sheet" [class.open]="menuOpen()">
-  <a href="#room" (click)="menuOpen.set(false)">The Room</a>
-  <a href="#cups" (click)="menuOpen.set(false)">Cups</a>
-  <a href="#menu" (click)="menuOpen.set(false)">Menu</a>
-  <a href="#visit" (click)="menuOpen.set(false)">Visit</a>
+  <a routerLink="/" fragment="room" (click)="menuOpen.set(false)">The Room</a>
+  <a routerLink="/" fragment="cups" (click)="menuOpen.set(false)">Cups</a>
+  <a routerLink="/" fragment="menu" (click)="menuOpen.set(false)">Menu</a>
+  <a routerLink="/" fragment="visit" (click)="menuOpen.set(false)">Visit</a>
   <div class="sheet__auth">
     <a class="nav__login" routerLink="/login">Log in</a>
     <a class="nav__cta" routerLink="/signup">Sign up</a>

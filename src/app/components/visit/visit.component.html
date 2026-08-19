@@ -1,0 +1,31 @@
+<section class="visit" id="visit">
+  <div class="vg">
+    <div>
+      <table class="hours">
+        <caption>Hours</caption>
+        <tbody>
+          <tr><th scope="row">Sunday — Thursday</th><td>07:00 — 19:00</td></tr>
+          <tr><th scope="row">Friday</th><td>08:00 — 14:00</td></tr>
+          <tr><th scope="row">Saturday</th><td>08:00 — 20:00</td></tr>
+        </tbody>
+      </table>
+      <p class="addr">Al-Tireh Street<br>Ramallah</p>
+      <p>Ground floor · Second door past the olive press</p>
+    </div>
+    <a class="map" [href]="mapsUrl" target="_blank" rel="noopener">
+  <img src="/assets/map.png" alt="Map preview — La Ta Coffee location" />
+  <span class="map__badge">Open in Maps →</span>
+</a>
+  </div>
+
+  <div class="ctas">
+    <a class="cta" routerLink="/reserve">
+      <span class="cta__l">Reserve a Seat<span class="cta__s">Twelve seats only</span></span>
+      <span class="cta__x">→</span>
+    </a>
+    <a class="cta" routerLink="/order">
+      <span class="cta__l">Order Ahead<span class="cta__s">Ready at the counter</span></span>
+      <span class="cta__x">→</span>
+    </a>
+  </div>
+</section>

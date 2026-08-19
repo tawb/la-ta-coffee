@@ -1,0 +1,114 @@
+.craft {
+  position: relative;
+}
+.craft__cnt {
+  position: static;
+  display: block;
+  max-width: 78rem;
+  margin: 0 auto 3rem;
+}
+.craft__pin {
+  position: relative;
+  height: 200vh;
+}
+.craft__stick {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: clamp(4rem, 10vh, 8rem) var(--gut);
+}
+.craft__grid {
+  max-width: 78rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+.craft__fig {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 70svh;
+  width: auto;
+  overflow: hidden;
+  background: var(--ink2);
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+.craft__fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.craft__tag {
+  position: absolute;
+  left: 1.2rem;
+  bottom: 1.1rem;
+  z-index: 2;
+  font-size: .56rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.craft__body h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5.4vw, 4.6rem);
+  line-height: 1.02;
+  margin: 0 0 1.8rem;
+}
+.craft__body h2 em {
+  font-style: italic;
+  color: var(--amber);
+}
+.craft__body p {
+  color: var(--dim);
+  line-height: 1.9;
+  font-size: 1rem;
+  max-width: 34ch;
+  margin: 0 0 1.4rem;
+}
+.craft__meta {
+  display: flex;
+  gap: 2.6rem;
+  margin-top: 2.4rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--ghost);
+}
+.craft__meta div {
+  flex: none;
+}
+.craft__meta b {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1;
+}
+.craft__meta span {
+  display: block;
+  font-size: .56rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: .5rem;
+}
+.cnt {
+  font-size: .58rem;
+  letter-spacing: .3em;
+  color: var(--faint);
+}
+.cnt::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--amber);
+  vertical-align: middle;
+  margin-right: .7rem;
+  opacity: .6;
+}
