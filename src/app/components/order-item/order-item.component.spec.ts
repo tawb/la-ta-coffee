@@ -14,6 +14,7 @@ describe('OrderItemComponent', () => {
 
     fixture = TestBed.createComponent(OrderItemComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('item', { id: 'test-1', n: 'Test Drink', note: 'A test note', p: 20 });
     fixture.detectChanges();
   });
 
