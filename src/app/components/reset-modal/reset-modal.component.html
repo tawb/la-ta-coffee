@@ -20,7 +20,7 @@
       </div>
 
       <button type="submit" class="submit" [disabled]="resetForm.invalid">Send reset link</button>
-      <p class="swap"><a (click)="modalService.open('login')">Back to log in</a></p>
+      <p class="swap"><a routerLink="/login" (click)="modalService.close()">Back to log in</a></p>
     </form>
   </div>
 </div>

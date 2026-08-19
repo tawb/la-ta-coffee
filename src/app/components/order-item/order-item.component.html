@@ -1,0 +1,7 @@
+<label class="pick" (click)="onToggle()">
+  <div class="pick__l">
+    <span class="pick__b" [class.on]="selected()"></span>
+    <span class="pick__n">{{ item().n }}</span>
+  </div>
+  <span class="pick__p">{{ item().p | price }}</span>
+</label>

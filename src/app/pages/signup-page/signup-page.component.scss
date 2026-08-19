@@ -1,0 +1,127 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.8rem, 4vw, 3rem) var(--gut);
+}
+.login-page__in {
+  max-width: 34rem;
+  width: 100%;
+}
+.login-page__top {
+  margin-bottom: 2.2rem;
+  text-align: center;
+}
+.login-page__top h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  margin: 0;
+}
+.login-page__top p {
+  margin: .6rem 0 0;
+  color: var(--dim);
+  font-size: .73rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.fields--grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem 1.6rem;
+}
+.f {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  min-width: 0;
+}
+.f.wide {
+  grid-column: 1 / -1;
+}
+.f label {
+  font-size: .57rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.f input {
+  width: 100%;
+  background: transparent;
+  color: var(--cream);
+  border: 0;
+  border-bottom: 1px solid var(--faint);
+  padding: .6rem 0;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 300;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .55s var(--e);
+}
+.f input:focus {
+  outline: none;
+  border-bottom-color: var(--amber);
+}
+.f input::placeholder {
+  color: rgba(234, 242, 251, .2);
+}
+.err {
+  font-size: .65rem;
+  color: var(--amber);
+  min-height: 1em;
+}
+.rem {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  cursor: pointer;
+  font-size: .78rem;
+  color: var(--dim);
+}
+.rem input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.rem input:checked ~ .pick__b {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.pick__b {
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--faint);
+  flex: none;
+  transition: .4s var(--e);
+}
+.submit {
+  margin-top: .5rem;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-size: .63rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  transition: color .7s var(--e);
+}
+.submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  transform: translateY(101%);
+  transition: transform .7s var(--e);
+  z-index: -1;
+}
+.submit:hover {
+  color: var(--ink);
+}
+.submit:hover::after {
+  transform: translateY(0);
+}

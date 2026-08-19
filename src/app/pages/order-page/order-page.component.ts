@@ -1,13 +1,15 @@
 import { Component, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { MenuService, MenuItem } from '../../services/menu.service';
 import { OrderStateService } from '../../services/order-state.service';
-import { PricePipe } from '../../pipes/price.pipe';
+import Swal from 'sweetalert2';
+import { OrderItemComponent } from '../../components/order-item/order-item.component';
 @Component({
   selector: 'app-order-page',
   standalone: true,
-  imports: [ReactiveFormsModule,PricePipe],
+  imports: [ReactiveFormsModule,OrderItemComponent],
   templateUrl: './order-page.component.html',
   styleUrl: './order-page.component.scss'
 })
@@ -16,6 +18,7 @@ export class OrderPageComponent {
   allItems: MenuItem[] = [];
   timeSlots: string[] = [];
   selectedItems = signal<Set<string>>(new Set());
+  submitting = false;
 
   total = computed(() => {
     const selected = this.selectedItems();
@@ -27,6 +30,7 @@ export class OrderPageComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private http: HttpClient,
     private menuService: MenuService,
     private orderState: OrderStateService
   ) {
@@ -67,12 +71,36 @@ export class OrderPageComponent {
 
   onSubmit() {
     if (this.orderForm.invalid || this.selectedItems().size === 0) return;
-    console.log('Order:', {
+
+    this.submitting = true;
+
+    const payload = {
       ...this.orderForm.value,
       items: Array.from(this.selectedItems()),
       total: this.total()
+    };
+
+    this.http.post('https://jsonplaceholder.typicode.com/posts', payload).subscribe({
+      next: () => {
+        this.submitting = false;
+        Swal.fire({
+          title: 'Order placed!',
+          icon: 'success',
+          timer: 1400,
+          showConfirmButton: false
+        });
+        const id = this.orderState.createConfirmation();
+        this.router.navigate(['/confirmation', id]);
+      },
+      error: (err) => {
+        this.submitting = false;
+        console.error('Order failed:', err);
+        Swal.fire({
+          title: 'Something went wrong',
+          text: 'Please try again',
+          icon: 'error'
+        });
+      }
     });
-    const id = this.orderState.createConfirmation();
-    this.router.navigate(['/confirmation', id]);
   }
 }

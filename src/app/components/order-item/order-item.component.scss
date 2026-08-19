@@ -1,0 +1,41 @@
+.pick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .66rem .2rem;
+  cursor: pointer;
+  transition: background-color .5s var(--e);
+}
+.pick:hover {
+  background: rgba(234, 242, 251, .03);
+}
+.pick__l {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  min-width: 0;
+}
+.pick__b {
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--faint);
+  flex: none;
+  transition: .4s var(--e);
+}
+.pick__b.on {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.pick__n {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pick__p {
+  font-family: var(--serif);
+  color: var(--dim);
+  flex: none;
+}

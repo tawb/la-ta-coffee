@@ -1,0 +1,51 @@
+<section class="login-page">
+  <div class="login-page__in">
+    <div class="login-page__top">
+      <h3>Join the room</h3>
+      <p>Twelve seats. One list.</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="fields fields--grid">
+      <div class="f">
+        <label>Name</label>
+        <input type="text" formControlName="name" placeholder="Your name" />
+        @if (signupForm.get('name')?.invalid && signupForm.get('name')?.touched) {
+          <span class="err">Name is required</span>
+        }
+      </div>
+
+      <div class="f">
+        <label>Phone</label>
+        <input type="tel" formControlName="phone" placeholder="059 000 0000" />
+        @if (signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched) {
+          <span class="err">Enter a valid phone number</span>
+        }
+      </div>
+
+      <div class="f wide">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+        @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+          <span class="err">Enter a valid email</span>
+        }
+      </div>
+
+      <div class="f wide">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="At least 8 characters" />
+        @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+          <span class="err">Password must be at least 8 characters</span>
+        }
+      </div>
+
+      <label class="rem wide">
+        <input type="checkbox" formControlName="terms" />
+        <span class="pick__b"></span>
+        I agree to the house rules
+      </label>
+
+      <button type="submit" class="submit wide" [disabled]="signupForm.invalid">Create account</button>
+      <p class="swap wide">Already have one? <a routerLink="/login">Log in</a></p>
+    </form>
+  </div>
+</section>
