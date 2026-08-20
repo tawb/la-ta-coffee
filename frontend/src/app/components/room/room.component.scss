@@ -1,0 +1,93 @@
+.brk {
+  position: relative;
+  height: 215vh;
+}
+.brk__st {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.plate {
+  position: relative;
+  width: min(88vw, 1240px);
+  height: min(76svh, 780px);
+  display: grid;
+  place-items: center;
+}
+.plate img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: saturate(1.02) contrast(1.02);
+}
+.plate__v {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(115% 95% at 50% 50%, transparent 30%, rgba(10, 9, 8, .55));
+}
+.brk__t {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  top: 11%;
+  padding: 0 var(--gut);
+  text-align: center;
+  pointer-events: none;
+}
+.room-h {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.05;
+  font-size: clamp(2.4rem, 8.2vw, 7rem);
+}
+.room-h em {
+  font-style: italic;
+  color: var(--amber);
+}
+.lines .ln {
+  display: block;
+  overflow: hidden;
+  padding-block: .06em;
+}
+.lines .ln i {
+  display: block;
+  font-style: normal;
+  transform: translateY(115%) rotate(4deg);
+  opacity: 0;
+  transition: transform 1.1s var(--e), opacity .9s var(--e);
+}
+.lines.in .ln i {
+  transform: none;
+  opacity: 1;
+}
+.lines .ln i em {
+  font-style: italic;
+  color: var(--amber);
+}
+.cnt {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2.4rem);
+  left: clamp(1rem, 3vw, 2.4rem);
+  z-index: 5;
+  font-size: .58rem;
+  letter-spacing: .3em;
+  color: var(--faint);
+}
+.cnt::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--amber);
+  vertical-align: middle;
+  margin-right: .7rem;
+  opacity: .6;
+}

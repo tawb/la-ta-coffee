@@ -1,0 +1,16 @@
+<section class="gal" id="cups">
+  <span class="cnt">03 — Cups</span>
+  <div class="gal__st">
+    <h2 class="gal__h">Ten ways<br>to sit still</h2>
+    <div class="gal__t">
+      @for (cup of cups; track cup.name) {
+        <div class="gal__c">
+          <div class="gal__img" [style.background-position-x]="slotPosition(cup.slot)" [style.background-size]="(frameCount * 100) + '% 100%'"></div>
+          <b>{{ cup.name }}</b>
+          <span>{{ cup.note }}</span>
+        </div>
+      }
+    </div>
+    <a href="#menu" class="gal__skip">Skip to menu ↓</a>
+  </div>
+</section>

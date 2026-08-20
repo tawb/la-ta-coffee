@@ -1,0 +1,101 @@
+.gal {
+  position: relative;
+  height: 250vh;
+  overflow-x: clip;
+  width: 100%;
+}
+.gal__st {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;  
+  overflow-x: clip;  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: radial-gradient(85% 50% at 50% 80%, rgba(71, 172, 219, .17), transparent 66%);
+}
+.gal__h {
+  position: absolute;
+  left: var(--gut);
+  top: 12vh;
+  z-index: 3;
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  margin: 0;
+  max-width: 12ch;
+}
+.gal__t {
+  display: flex;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  padding-inline: 12vw;
+  padding-top: 8rem;
+  will-change: transform;
+}
+.gal__c {
+  flex: none;
+  width: clamp(140px, 15vw, 235px);
+  text-align: center;
+}
+.gal__img {
+  width: 100%;
+  aspect-ratio: 340 / 500;
+  background-image: url('/assets/atlas.webp');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  will-change: transform;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, .5));
+  transition: filter .6s var(--e);
+}
+.gal__c:hover .gal__img {
+  filter: drop-shadow(0 34px 54px rgba(0, 0, 0, .7)) drop-shadow(0 6px 22px rgba(71, 172, 219, .42));
+}
+.gal__c b {
+  display: block;
+  margin-top: 1.1rem;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+.gal__c span {
+  display: block;
+  font-size: .56rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: .3rem;
+}
+.gal__skip {
+  position: absolute;
+  right: var(--gut);
+  bottom: 2rem;
+  z-index: 3;
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: color .4s var(--e);
+}
+.gal__skip:hover {
+  color: var(--amber);
+}
+.cnt {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2.4rem);
+  left: clamp(1rem, 3vw, 2.4rem);
+  z-index: 5;
+  font-size: .58rem;
+  letter-spacing: .3em;
+  color: var(--faint);
+}
+.cnt::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--amber);
+  vertical-align: middle;
+  margin-right: .7rem;
+  opacity: .6;
+}

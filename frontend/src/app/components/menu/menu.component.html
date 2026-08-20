@@ -1,0 +1,34 @@
+<section class="menu" id="menu">
+  <span class="cnt" style="position:static;display:block;margin-bottom:1.4rem">04 — The List</span>
+  <div class="menu__g">
+  @if (menuService.isLoading()) {
+    <p class="menu__state">Loading the menu...</p>
+  } @else if (menuService.loadError()) {
+    <p class="menu__state menu__state--error">
+      {{ menuService.loadError() }}
+      <button class="menu__retry" (click)="retryLoad()">Try again</button>
+    </p>
+  } @else {
+    @for (category of categories; track category.cat) {
+      <div class="set">
+        <p class="set__c">{{ category.cat }}</p>
+        @for (item of category.items; track item.n) {
+          <app-menu-item [item]="item" (ordered)="onItemOrdered($event)"></app-menu-item>
+        }
+      </div>
+    }
+  }
+</div>
+  <div class="menu__f">
+  <div class="ticker">
+    <div class="ticker__track" aria-hidden="true">
+      @for (i of [1,2,3,4]; track i) {
+        <span class="ticker__item">
+          <span class="ticker__badge" lang="ar">لا</span>
+          Roasted this week &nbsp; • &nbsp; Twelve seats &nbsp; • &nbsp; No wifi &nbsp; •
+        </span>
+      }
+    </div>
+  </div>
+</div>
+</section>
