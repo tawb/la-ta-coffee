@@ -17,7 +17,7 @@ export interface MenuCategory {
   providedIn: 'root'
 })
 export class MenuService {
-  private menuUrl = '/assets/menu.json';
+  private menuUrl = '/api/menu';
 
   menu = signal<MenuCategory[]>([]);
   isLoading = signal(false);

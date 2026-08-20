@@ -22,7 +22,13 @@
         }
       </div>
 
-      <button type="submit" class="submit" [disabled]="loginForm.invalid">Log in</button>
+      @if (errorMessage) {
+        <p class="err wide">{{ errorMessage }}</p>
+      }
+
+      <button type="submit" class="submit" [disabled]="loginForm.invalid || submitting">
+        {{ submitting ? 'Logging in…' : 'Log in' }}
+      </button>
 <p class="swap"><a (click)="modalService.open('reset')">Forgot password?</a></p>
     </form>
   </div>

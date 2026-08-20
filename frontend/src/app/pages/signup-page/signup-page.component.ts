@@ -2,19 +2,24 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+
 @Component({
   selector: 'app-signup-page',
   standalone: true,
-  imports: [ReactiveFormsModule,RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './signup-page.component.html',
   styleUrl: './signup-page.component.scss'
 })
 export class SignupPageComponent {
   signupForm: FormGroup;
+  submitting = false;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
@@ -26,8 +31,28 @@ export class SignupPageComponent {
   }
 
   onSubmit() {
-    if (this.signupForm.invalid) return;
-    console.log('Signup for:', this.signupForm.value.email);
-    this.router.navigate(['/']);
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting = true;
+    this.errorMessage = null;
+
+   
+    const { terms, ...payload } = this.signupForm.value;
+
+    this.authService.signup(payload).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.errorMessage = err.status === 409
+          ? 'An account with that email already exists.'
+          : 'Something went wrong. Please try again.';
+      }
+    });
   }
 }

@@ -44,7 +44,13 @@
         I agree to the house rules
       </label>
 
-      <button type="submit" class="submit wide" [disabled]="signupForm.invalid">Create account</button>
+      @if (errorMessage) {
+        <p class="err wide">{{ errorMessage }}</p>
+      }
+
+      <button type="submit" class="submit wide" [disabled]="signupForm.invalid || submitting">
+        {{ submitting ? 'Creating account…' : 'Create account' }}
+      </button>
       <p class="swap wide">Already have one? <a routerLink="/login">Log in</a></p>
     </form>
   </div>
