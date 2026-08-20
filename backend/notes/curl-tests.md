@@ -34,3 +34,19 @@ curl.exe -v -X POST http://localhost:8080/api/reservations -H "Content-Type: app
 
 ## My reservations
 curl.exe -v http://localhost:8080/api/reservations/me -H "Authorization: Bearer <token>"
+
+## Order API (requires Authorization: Bearer <token>)
+
+## Create order (server recomputes total, ignores client's total field)
+[System.IO.File]::WriteAllText("$PWD\order.json", '{"time":"17:30","name":"Sam Lee","items":["espresso-cortado","matcha-latte"],"total":0.01}')
+curl.exe -v -X POST http://localhost:8080/api/orders -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d "@order.json"
+
+## Order with unknown item ID (expect 400)
+[System.IO.File]::WriteAllText("$PWD\badorder.json", '{"time":"17:30","name":"Sam Lee","items":["fake-item-id"],"total":10.0}')
+curl.exe -v -X POST http://localhost:8080/api/orders -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d "@badorder.json"
+
+## Order without token (expect 403)
+curl.exe -v -X POST http://localhost:8080/api/orders -H "Content-Type: application/json" -d "@order.json"
+
+## My orders
+curl.exe -v http://localhost:8080/api/orders/me -H "Authorization: Bearer <token>"
