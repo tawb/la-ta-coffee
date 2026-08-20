@@ -113,37 +113,45 @@ total = computed(() => {
   }*/
 
 
- // Real endpoint once a backend exists:
-// POST /api/orders
-// Expects: { time, name, items: string[], total }
-// Returns: { id, confirmedAt }
-onSubmit() {
-  if (this.orderForm.invalid || this.selectedItems().size === 0) {
-    this.orderForm.markAllAsTouched();
-    return;
-  }
-  this.submitting = true;
-
-  const payload = {
-    ...this.orderForm.value,
-    items: Array.from(this.selectedItems()),
-    total: this.total()
-  };
-
-  // return this.http.post('/api/orders', payload).subscribe({ ... });
-
-  of(null).pipe(delay(600)).subscribe({
-    next: () => {
-      this.submitting = false;
-      Swal.fire({
-        title: 'Order placed!',
-        icon: 'success',
-        timer: 1400,
-        showConfirmButton: false
-      });
-      const id = this.orderState.createConfirmation();
-      this.router.navigate(['/confirmation', id]);
+ // POST /api/orders — requires login (interceptor attaches the token automatically)
+  // Expects: { time, name, items: string[], total }
+  // Returns: { id, confirmedAt }
+  ///////// the server recomputes `total` itself from real menu prices and will
+  // reject the request if it doesn't match what we sent 
+  onSubmit() {
+    if (this.orderForm.invalid || this.selectedItems().size === 0) {
+      this.orderForm.markAllAsTouched();
+      return;
     }
-  });
-}
+    this.submitting = true;
+
+    const payload = {
+      ...this.orderForm.value,
+      items: Array.from(this.selectedItems()),
+      total: this.total()
+    };
+
+    this.http.post<{ id: string; confirmedAt: string }>('/api/orders', payload).subscribe({
+      next: () => {
+        this.submitting = false;
+        Swal.fire({
+          title: 'Order placed!',
+          icon: 'success',
+          timer: 1400,
+          showConfirmButton: false
+        });
+        const id = this.orderState.createConfirmation();
+        this.router.navigate(['/confirmation', id]);
+      },
+      error: (err) => {
+        this.submitting = false;
+        console.error('Order failed:', err);
+        Swal.fire({
+          title: 'Something went wrong',
+          text: 'Please try again',
+          icon: 'error'
+        });
+      }
+    });
+  }
 }

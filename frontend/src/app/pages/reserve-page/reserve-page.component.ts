@@ -92,33 +92,38 @@ export class ReservePageComponent {
 
 
 
-  // Real endpoint  once a backend exists and i do it :
-// POST /api/reservations
-// Expects: { date, time, party, name, phone }
-// Returns: { id, confirmedAt }
-onSubmit() {
-   if (this.reserveForm.invalid) {
-    this.reserveForm.markAllAsTouched();
-    return;
-  }
-  
-
-  this.submitting = true;
-
-  // return this.http.post('/api/reservations', this.reserveForm.value).subscribe({ ... });
-
-  of(null).pipe(delay(600)).subscribe({
-    next: () => {
-      this.submitting = false;
-      Swal.fire({
-        title: 'Reservation confirmed!',
-        icon: 'success',
-        timer: 1400,
-        showConfirmButton: false
-      });
-      const id = this.orderState.createConfirmation();
-      this.router.navigate(['/confirmation', id]);
+  // POST /api/reservations  requires login (interceptor attaches the token automatically)
+  // Expects: { date, time, party, name, phone }
+  // Returns: { id, confirmedAt }
+  onSubmit() {
+    if (this.reserveForm.invalid) {
+      this.reserveForm.markAllAsTouched();
+      return;
     }
-  });
-}
+
+    this.submitting = true;
+
+    this.http.post<{ id: string; confirmedAt: string }>('/api/reservations', this.reserveForm.value).subscribe({
+      next: () => {
+        this.submitting = false;
+        Swal.fire({
+          title: 'Reservation confirmed!',
+          icon: 'success',
+          timer: 1400,
+          showConfirmButton: false
+        });
+        const id = this.orderState.createConfirmation();
+        this.router.navigate(['/confirmation', id]);
+      },
+      error: (err) => {
+        this.submitting = false;
+        console.error('Reservation failed:', err);
+        Swal.fire({
+          title: 'Something went wrong',
+          text: 'Please try again',
+          icon: 'error'
+        });
+      }
+    });
+  }
 }

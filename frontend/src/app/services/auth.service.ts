@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, tap } from 'rxjs';
 
 interface LoginPayload {
   email: string;
@@ -25,31 +24,50 @@ interface SignupResponse {
   email: string;
   token: string;
 }
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private baseUrl = '/api/auth';
 
+  // Tracks login state app-wide so components (nav, guards) can react to it.
+  isLoggedIn = signal<boolean>(!!localStorage.getItem('token'));
+  currentEmail = signal<string | null>(localStorage.getItem('userEmail'));
+
   constructor(private http: HttpClient) {}
 
-  // Real endpoint once a backend exists later when i do it :
   // POST /api/auth/login
   // Expects: { email, password }
   // Returns: { id, email, token }
   login(payload: LoginPayload): Observable<LoginResponse> {
-    // return this.http.post<LoginResponse>(`${this.baseUrl}/login`, payload);
-
-    // Simulated until backend exists no real request, no PII(Personally Identifiable Information) sent anywhere.
-    return of({ id: 'sim-1', email: payload.email, token: 'fake-token' }).pipe(delay(500));
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, payload).pipe(
+      tap(response => this.storeSession(response))
+    );
   }
 
-  // Real endpoint once a backend exists and i do it :
   // POST /api/auth/signup
   // Expects: { name, phone, email, password }
   // Returns: { id, email, token }
   signup(payload: SignupPayload): Observable<SignupResponse> {
-  // return this.http.post<SignupResponse>(`${this.baseUrl}/signup`, payload);
+    return this.http.post<SignupResponse>(`${this.baseUrl}/signup`, payload).pipe(
+      tap(response => this.storeSession(response))
+    );
+  }
 
-  return of({ id: 'sim-1', email: payload.email, token: 'fake-token' }).pipe(delay(500));}
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    this.isLoggedIn.set(false);
+    this.currentEmail.set(null);
+  }
+
+  private storeSession(response: LoginResponse | SignupResponse) {
+    // auth.interceptor.ts reads this exact key ('token') and attaches it
+    // as "Authorization: Bearer <token>" to every outgoing request.
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('userEmail', response.email);
+    this.isLoggedIn.set(true);
+    this.currentEmail.set(response.email);
+  }
 }
