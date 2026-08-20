@@ -17,3 +17,20 @@ curl.exe -v -X POST http://localhost:8080/api/auth/signup -H "Content-Type: appl
 
 ## Promote to admin
 curl.exe -v -X POST http://localhost:8080/api/auth/promote/sam@example.com
+
+## Menu testing 
+
+curl.exe http://localhost:8080/api/menu
+curl.exe "http://localhost:8080/api/menu/search?q=matcha"
+
+## Reservation API (requires Authorization: Bearer <token> from login/signup)
+
+## Create reservation
+[System.IO.File]::WriteAllText("$PWD\reserve.json", '{"date":"2026-12-25","time":"19:30","party":4,"name":"Sam Lee","phone":"0501234567"}')
+curl.exe -v -X POST http://localhost:8080/api/reservations -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d "@reserve.json"
+
+## Create reservation without token (expect 403)
+curl.exe -v -X POST http://localhost:8080/api/reservations -H "Content-Type: application/json" -d "@reserve.json"
+
+## My reservations
+curl.exe -v http://localhost:8080/api/reservations/me -H "Authorization: Bearer <token>"
