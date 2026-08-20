@@ -17,3 +17,8 @@ curl.exe -v -X POST http://localhost:8080/api/auth/signup -H "Content-Type: appl
 
 ## Promote to admin
 curl.exe -v -X POST http://localhost:8080/api/auth/promote/sam@example.com
+
+## Menu testing 
+
+curl.exe http://localhost:8080/api/menu
+curl.exe "http://localhost:8080/api/menu/search?q=matcha"
