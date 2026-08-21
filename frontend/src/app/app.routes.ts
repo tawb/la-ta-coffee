@@ -7,13 +7,17 @@ import { ConfirmationPageComponent } from './pages/confirmation-page/confirmatio
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { confirmationGuard } from './guards/confirmation.guard';
 import { authGuard } from './guards/auth.guard';
+import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
+import { MyOrdersComponent } from './pages/my-orders/my-orders.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', children: [] }, 
   { path: 'login', component: LoginPageComponent, title: 'Log In' },
   { path: 'signup', component: SignupPageComponent, title: 'Sign Up' },
   { path: 'reserve', component: ReservePageComponent, canActivate: [authGuard], title: 'Reserve a Table' },
-  { path: 'order', component: OrderPageComponent, canActivate: [authGuard], title: 'Your Order' },
+    { path: 'order', component: OrderPageComponent, canActivate: [authGuard], title: 'Your Order' },
+  { path: 'my-reservations', component: MyReservationsComponent, canActivate: [authGuard], title: 'My Reservations' },
+  { path: 'my-orders', component: MyOrdersComponent, canActivate: [authGuard], title: 'Order History' },
   {
     path: 'confirmation/:id',
     component: ConfirmationPageComponent,

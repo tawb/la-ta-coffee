@@ -1,0 +1,27 @@
+<section class="history">
+  <h1>Order history</h1>
+
+  @if (loading) {
+    <p>Loading…</p>
+  } @else if (error) {
+    <p>Could not load your orders.</p>
+  } @else if (orders.length === 0) {
+    <p>You haven't placed any orders yet.</p>
+  } @else {
+    <ul class="history__list">
+      @for (o of orders; track o.id) {
+        <li class="history__item">
+          <div>
+            <span>{{ o.time }} — ${{ o.total.toFixed(2) }}</span>
+            <span class="status">{{ o.status }}</span>
+          </div>
+          <ul class="items">
+            @for (item of o.items; track item.name) {
+              <li>{{ item.name }} — ${{ item.unitPrice.toFixed(2) }}</li>
+            }
+          </ul>
+        </li>
+      }
+    </ul>
+  }
+</section>
