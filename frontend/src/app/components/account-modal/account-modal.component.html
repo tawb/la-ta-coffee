@@ -3,26 +3,35 @@
 <div class="modal auth" [class.open]="modalService.activeModal() === 'account'">
   <div class="modal__in">
     <div class="modal__top">
-      <div>
-        <h3>Your account</h3>
-        <p>Guest — not signed in</p>
-      </div>
-      <button class="mx" (click)="modalService.close()">Close</button>
-    </div>
-
-    <div class="acct">
-      <a class="acct__row" routerLink="/login" (click)="modalService.close()">
-        <span>Log in</span><span class="cta__x">→</span>
-      </a>
-      <a class="acct__row" routerLink="/signup" (click)="modalService.close()">
-        <span>Create an account</span><span class="cta__x">→</span>
-      </a>
-      <a class="acct__row" routerLink="/reserve" (click)="modalService.close()">
-        <span>My reservations</span><span class="cta__x">→</span>
-      </a>
-      <a class="acct__row" routerLink="/order" (click)="modalService.close()">
-        <span>Order history</span><span class="cta__x">→</span>
-      </a>
-    </div>
+  <div>
+    <h3>Your account</h3>
+    @if (authService.isLoggedIn()) {
+      <p>{{ authService.currentEmail() }}</p>
+    } @else {
+      <p>Guest — not signed in</p>
+    }
+  </div>
+  <button class="mx" (click)="modalService.close()">Close</button>
+</div>
+<div class="acct">
+  @if (authService.isLoggedIn()) {
+        <a class="acct__row" routerLink="/my-reservations" (click)="modalService.close()">
+      <span>My reservations</span><span class="cta__x">→</span>
+    </a>
+    <a class="acct__row" routerLink="/my-orders" (click)="modalService.close()">
+      <span>Order history</span><span class="cta__x">→</span>
+    </a>
+    <a class="acct__row" (click)="logout()">
+      <span>Log out</span><span class="cta__x">→</span>
+    </a>
+  } @else {
+    <a class="acct__row" routerLink="/login" (click)="modalService.close()">
+      <span>Log in</span><span class="cta__x">→</span>
+    </a>
+    <a class="acct__row" routerLink="/signup" (click)="modalService.close()">
+      <span>Create an account</span><span class="cta__x">→</span>
+    </a>
+  }
+</div>
   </div>
 </div>

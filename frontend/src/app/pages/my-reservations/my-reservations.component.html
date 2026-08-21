@@ -1,0 +1,21 @@
+<section class="history">
+  <h1>My reservations</h1>
+
+  @if (loading) {
+    <p>Loading…</p>
+  } @else if (error) {
+    <p>Could not load your reservations.</p>
+  } @else if (reservations.length === 0) {
+    <p>You haven't made any reservations yet.</p>
+  } @else {
+    <ul class="history__list">
+      @for (r of reservations; track r.id) {
+        <li class="history__item">
+          <span>{{ r.date }} at {{ r.time }}</span>
+          <span>{{ r.party }} guests</span>
+          <span class="status">{{ r.status }}</span>
+        </li>
+      }
+    </ul>
+  }
+</section>
