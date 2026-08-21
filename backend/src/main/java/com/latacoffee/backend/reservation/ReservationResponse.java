@@ -1,6 +1,7 @@
 package com.latacoffee.backend.reservation;
 
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,5 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ReservationResponse {
     private String id;
-    private Instant confirmedAt;
+    private LocalDate date;
+    private LocalTime time;
+    private int party;
+    private String status;
 }

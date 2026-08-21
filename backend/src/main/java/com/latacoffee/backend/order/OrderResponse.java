@@ -1,6 +1,7 @@
 package com.latacoffee.backend.order;
 
-import java.time.Instant;
+import java.time.LocalTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,5 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OrderResponse {
     private String id;
-    private Instant confirmedAt;
+    private LocalTime time;
+    private String status;
+    private double total;
+    private List<OrderItemResponse> items;
 }
