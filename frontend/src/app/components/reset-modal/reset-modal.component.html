@@ -10,17 +10,27 @@
       <button class="mx" (click)="modalService.close()">Close</button>
     </div>
 
-    <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="fields">
-      <div class="f wide">
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="you@example.com" />
-        @if (resetForm.get('email')?.invalid && resetForm.get('email')?.touched) {
-          <span class="err">Enter a valid email</span>
-        }
-      </div>
+    @if (submitted) {
+      <p class="ok">Check your inbox — we've sent a reset link.</p>
+    } @else {
+      <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="fields">
+        <div class="f wide">
+          <label>Email</label>
+          <input type="email" formControlName="email" placeholder="you@example.com" />
+          @if (resetForm.get('email')?.invalid && resetForm.get('email')?.touched) {
+            <span class="err">Enter a valid email</span>
+          }
+        </div>
 
-      <button type="submit" class="submit" [disabled]="resetForm.invalid">Send reset link</button>
-      <p class="swap"><a routerLink="/login" (click)="modalService.close()">Back to log in</a></p>
-    </form>
+        @if (errorMessage) {
+          <p class="err wide">{{ errorMessage }}</p>
+        }
+
+        <button type="submit" class="submit" [disabled]="resetForm.invalid || submitting">
+          {{ submitting ? 'Sending…' : 'Send reset link' }}
+        </button>
+        <p class="swap"><a routerLink="/login" (click)="modalService.close()">Back to log in</a></p>
+      </form>
+    }
   </div>
 </div>
