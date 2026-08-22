@@ -5,11 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.latacoffee.auth_service.auth.AccountNotFoundException;
 import com.latacoffee.auth_service.auth.EmailAlreadyExistsException;
 import com.latacoffee.auth_service.auth.InvalidCredentialsException;
 import com.latacoffee.auth_service.auth.InvalidResetTokenException;
-import com.latacoffee.auth_service.order.MenuItemNotFoundException;
-import com.latacoffee.auth_service.auth.AccountNotFoundException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -24,11 +23,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("INVALID_CREDENTIALS", ex.getMessage()));
     }
-    @ExceptionHandler(MenuItemNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleMenuItemNotFound(MenuItemNotFoundException ex) {
-         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-             .body(new ErrorResponse("MENU_ITEM_NOT_FOUND", ex.getMessage()));
-}
     @ExceptionHandler(InvalidResetTokenException.class)
     public ResponseEntity<ErrorResponse> handleInvalidResetToken(InvalidResetTokenException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
