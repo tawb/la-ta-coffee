@@ -9,6 +9,7 @@ import { confirmationGuard } from './guards/confirmation.guard';
 import { authGuard } from './guards/auth.guard';
 import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
 import { MyOrdersComponent } from './pages/my-orders/my-orders.component';
+import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', children: [] }, 
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'order', component: OrderPageComponent, canActivate: [authGuard], title: 'Your Order' },
   { path: 'my-reservations', component: MyReservationsComponent, canActivate: [authGuard], title: 'My Reservations' },
   { path: 'my-orders', component: MyOrdersComponent, canActivate: [authGuard], title: 'Order History' },
+  { path: 'reset-password', component: ResetPasswordPageComponent, title: 'Reset Password' },
   {
     path: 'confirmation/:id',
     component: ConfirmationPageComponent,
