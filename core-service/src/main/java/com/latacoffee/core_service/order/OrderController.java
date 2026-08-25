@@ -3,6 +3,7 @@ package com.latacoffee.core_service.order;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.latacoffee.core_service.common.AuthServiceClient;
 import com.latacoffee.core_service.common.UserProfileResponse;
+import com.latacoffee.core_service.config.RabbitMQConfig;
 import com.latacoffee.core_service.menu.MenuItem;
 import com.latacoffee.core_service.menu.MenuItemRepository;
 
@@ -26,12 +28,14 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final MenuItemRepository menuItemRepository;
     private final AuthServiceClient authServiceClient;
+    private final RabbitTemplate rabbitTemplate;
 
     public OrderController(OrderRepository orderRepository, MenuItemRepository menuItemRepository,
-                            AuthServiceClient authServiceClient) {
+                            AuthServiceClient authServiceClient, RabbitTemplate rabbitTemplate) {
         this.orderRepository = orderRepository;
         this.menuItemRepository = menuItemRepository;
         this.authServiceClient = authServiceClient;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @PostMapping
@@ -41,7 +45,7 @@ public class OrderController {
     ) {
         String userEmail = authentication.getName();
 
-        // Real synchronous cross service call 
+        // Real synchronous cross-service call 
         // needs the customer's real name before it can proceed correctly.
         UserProfileResponse profile = authServiceClient.getUserProfile(userEmail);
 
@@ -61,6 +65,14 @@ public class OrderController {
         order.setTotal(realTotal);
 
         orderRepository.save(order);
+
+        // Async the order has already succeeded; the notification is a
+        // side effect that doesn't need to have happened before we respond
+        //so we use queueing
+        OrderCreatedMessage message = new OrderCreatedMessage(
+                userEmail, profile.name(), String.valueOf(order.getId()), realTotal
+        );
+        rabbitTemplate.convertAndSend(RabbitMQConfig.ORDER_QUEUE, message);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(order));
     }

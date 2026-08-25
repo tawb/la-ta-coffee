@@ -13,10 +13,23 @@
       interval: 5s
       timeout: 5s
       retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   discovery-server:
     build: ./discovery-server
     ports:
       - "8761:8761"
+
   auth-service:
     build: ./auth-service
     environment:
@@ -32,6 +45,7 @@
         condition: service_healthy
       discovery-server:
         condition: service_started
+
   core-service:
     build: ./core-service
     environment:
@@ -45,6 +59,7 @@
         condition: service_healthy
       discovery-server:
         condition: service_started
+
   api-gateway:
     build: ./api-gateway
     environment:
@@ -55,5 +70,17 @@
       - discovery-server
       - auth-service
       - core-service
+
+  notification-service:
+    build: ./notification-service
+    environment:
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    ports:
+      - "8083:8083"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   postgres-data:
