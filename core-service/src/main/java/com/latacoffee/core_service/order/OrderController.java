@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.latacoffee.core_service.common.AuthServiceClient;
+import com.latacoffee.core_service.common.UserProfileResponse;
 import com.latacoffee.core_service.menu.MenuItem;
 import com.latacoffee.core_service.menu.MenuItemRepository;
 
@@ -23,10 +25,13 @@ public class OrderController {
 
     private final OrderRepository orderRepository;
     private final MenuItemRepository menuItemRepository;
+    private final AuthServiceClient authServiceClient;
 
-    public OrderController(OrderRepository orderRepository, MenuItemRepository menuItemRepository) {
+    public OrderController(OrderRepository orderRepository, MenuItemRepository menuItemRepository,
+                            AuthServiceClient authServiceClient) {
         this.orderRepository = orderRepository;
         this.menuItemRepository = menuItemRepository;
+        this.authServiceClient = authServiceClient;
     }
 
     @PostMapping
@@ -36,7 +41,11 @@ public class OrderController {
     ) {
         String userEmail = authentication.getName();
 
-        Order order = new Order(userEmail, request.getTime(), request.getName());
+        // Real synchronous cross service call 
+        // needs the customer's real name before it can proceed correctly.
+        UserProfileResponse profile = authServiceClient.getUserProfile(userEmail);
+
+        Order order = new Order(userEmail, request.getTime(), profile.name());
 
         for (String itemId : request.getItems()) {
             MenuItem menuItem = menuItemRepository.findById(itemId)
