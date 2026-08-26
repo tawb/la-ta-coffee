@@ -1,15 +1,22 @@
 package com.latacoffee.auth_service.auth;
 
-import com.latacoffee.auth_service.common.EmailService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.latacoffee.auth_service.common.EmailService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -45,7 +52,7 @@ public class AuthController {
         User user = new User(request.getName(), request.getPhone(), request.getEmail(), hashedPassword);
         User saved = userRepository.save(user);
 
-        String token = jwtService.generateToken(saved.getEmail());
+        String token = jwtService.generateToken(saved.getEmail(), saved.getRole().name());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AuthResponse(String.valueOf(saved.getId()), saved.getEmail(), token));
     }
@@ -59,10 +66,10 @@ public class AuthController {
             throw new InvalidCredentialsException();
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
         return ResponseEntity.ok(new AuthResponse(String.valueOf(user.getId()), user.getEmail(), token));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/promote/{email}")
     public ResponseEntity<String> promoteToAdmin(@PathVariable String email) {
         return userRepository.findByEmail(email)
