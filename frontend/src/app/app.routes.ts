@@ -7,6 +7,8 @@ import { ConfirmationPageComponent } from './pages/confirmation-page/confirmatio
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { confirmationGuard } from './guards/confirmation.guard';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
 import { MyOrdersComponent } from './pages/my-orders/my-orders.component';
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
@@ -20,6 +22,7 @@ export const routes: Routes = [
   { path: 'my-reservations', component: MyReservationsComponent, canActivate: [authGuard], title: 'My Reservations' },
   { path: 'my-orders', component: MyOrdersComponent, canActivate: [authGuard], title: 'Order History' },
   { path: 'reset-password', component: ResetPasswordPageComponent, title: 'Reset Password' },
+  { path: 'admin', component: AdminPageComponent, canActivate: [adminGuard], title: 'Admin Dashboard' },
   {
     path: 'confirmation/:id',
     component: ConfirmationPageComponent,

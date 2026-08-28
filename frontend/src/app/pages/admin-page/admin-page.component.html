@@ -1,0 +1,166 @@
+<section class="admin-page">
+  <h1>Admin Dashboard</h1>
+
+  <div class="tabs">
+    <button [class.active]="activeTab === 'orders'" (click)="setTab('orders')">Orders</button>
+    <button [class.active]="activeTab === 'reservations'" (click)="setTab('reservations')">Reservations</button>
+    <button [class.active]="activeTab === 'users'" (click)="setTab('users')">Users</button>
+  </div>
+    <div class="stats-summary">
+    @if (statsLoading) {
+      <p>Loading stats…</p>
+    } @else if (statsError) {
+      <p>Could not load stats.</p>
+    } @else if (stats) {
+      <div class="stat-card">
+        <span class="stat-label">Total Revenue</span>
+        <span class="stat-value">${{ stats.totalRevenue.toFixed(2) }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Average Order Value</span>
+        <span class="stat-value">${{ stats.averageOrderValue.toFixed(2) }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Average Party Size</span>
+        <span class="stat-value">{{ stats.averagePartySize.toFixed(1) }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Orders by Status</span>
+        @for (key of statusKeys(stats.ordersByStatus); track key) {
+          <span class="stat-line">{{ key }}: {{ stats.ordersByStatus[key] }}</span>
+        }
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Reservations by Status</span>
+        @for (key of statusKeys(stats.reservationsByStatus); track key) {
+          <span class="stat-line">{{ key }}: {{ stats.reservationsByStatus[key] }}</span>
+        }
+      </div>
+    }
+  </div>
+    @if (activeTab === 'orders') {
+    <div class="table-section">
+      @if (ordersLoading) {
+        <p>Loading orders…</p>
+      } @else if (ordersError) {
+        <p>Could not load orders.</p>
+      } @else if (orders.length === 0) {
+        <p>No orders yet.</p>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders; track order.id) {
+              <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.time }}</td>
+                <td>{{ order.status }}</td>
+                <td>${{ order.total.toFixed(2) }}</td>
+                <td>
+                  @for (item of order.items; track item.name) {
+                    <span class="item-chip">{{ item.name }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <button [disabled]="ordersPage === 0" (click)="loadOrders(ordersPage - 1)">Previous</button>
+          <span>Page {{ ordersPage + 1 }} of {{ ordersTotalPages }}</span>
+          <button [disabled]="ordersPage + 1 >= ordersTotalPages" (click)="loadOrders(ordersPage + 1)">Next</button>
+        </div>
+      }
+    </div>
+  }
+    @if (activeTab === 'reservations') {
+    <div class="table-section">
+      @if (reservationsLoading) {
+        <p>Loading reservations…</p>
+      } @else if (reservationsError) {
+        <p>Could not load reservations.</p>
+      } @else if (reservations.length === 0) {
+        <p>No reservations yet.</p>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Party</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of reservations; track r.id) {
+              <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.date }}</td>
+                <td>{{ r.time }}</td>
+                <td>{{ r.party }}</td>
+                <td>{{ r.status }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <button [disabled]="reservationsPage === 0" (click)="loadReservations(reservationsPage - 1)">Previous</button>
+          <span>Page {{ reservationsPage + 1 }} of {{ reservationsTotalPages }}</span>
+          <button [disabled]="reservationsPage + 1 >= reservationsTotalPages" (click)="loadReservations(reservationsPage + 1)">Next</button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'users') {
+    <div class="table-section">
+      @if (usersLoading) {
+        <p>Loading users…</p>
+      } @else if (usersError) {
+        <p>Could not load users.</p>
+      } @else if (users.length === 0) {
+        <p>No users yet.</p>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of users; track u.id) {
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.phone }}</td>
+                <td>{{ u.role }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <button [disabled]="usersPage === 0" (click)="loadUsers(usersPage - 1)">Previous</button>
+          <span>Page {{ usersPage + 1 }} of {{ usersTotalPages }}</span>
+          <button [disabled]="usersPage + 1 >= usersTotalPages" (click)="loadUsers(usersPage + 1)">Next</button>
+        </div>
+      }
+    </div>
+  }
+</section>
