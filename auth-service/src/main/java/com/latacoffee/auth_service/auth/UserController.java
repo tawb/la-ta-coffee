@@ -8,11 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -49,5 +45,29 @@ public class UserController {
                 .map(user -> new AdminUserResponse(
                         String.valueOf(user.getId()), user.getName(), user.getEmail(), user.getPhone(), user.getRole().name()
                 ));
+    }
+
+    @DeleteMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        if (!userRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/admin/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AdminUserResponse> updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequest request) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setRole(Role.valueOf(request.role()));
+                    userRepository.save(user);
+                    return ResponseEntity.ok(new AdminUserResponse(
+                            String.valueOf(user.getId()), user.getName(), user.getEmail(), user.getPhone(), user.getRole().name()
+                    ));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
