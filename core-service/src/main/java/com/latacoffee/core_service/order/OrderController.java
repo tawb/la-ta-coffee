@@ -74,9 +74,16 @@ public class OrderController {
         @PutMapping("/admin/{id}/status")
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<OrderResponse> updateStatus(@PathVariable Long id, @RequestBody OrderStatusUpdateRequest request) {
+        OrderStatus newStatus;
+        try {
+                newStatus = OrderStatus.valueOf(request.status());
+        } catch (IllegalArgumentException e) {
+                throw new InvalidOrderStatusException(request.status());
+        }
+
         return orderRepository.findById(id)
                 .map(order -> {
-                        order.setStatus(OrderStatus.valueOf(request.status()));
+                        order.setStatus(newStatus);
                         orderRepository.save(order);
                         return ResponseEntity.ok(toResponse(order));
                 })

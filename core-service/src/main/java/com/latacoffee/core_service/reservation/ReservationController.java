@@ -70,9 +70,16 @@ public class ReservationController {
     @PutMapping("/admin/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ReservationResponse> updateStatus(@PathVariable Long id, @RequestBody ReservationStatusUpdateRequest request) {
+        ReservationStatus newStatus;
+        try {
+            newStatus = ReservationStatus.valueOf(request.status());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidReservationStatusException(request.status());
+        }
+
         return reservationRepository.findById(id)
                 .map(reservation -> {
-                    reservation.setStatus(ReservationStatus.valueOf(request.status()));
+                    reservation.setStatus(newStatus);
                     reservationRepository.save(reservation);
                     return ResponseEntity.ok(toResponse(reservation));
                 })

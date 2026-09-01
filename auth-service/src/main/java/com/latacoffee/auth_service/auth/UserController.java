@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.core.Authentication;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -49,20 +49,31 @@ public class UserController {
 
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        userRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, Authentication authentication) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    if (user.getEmail().equals(authentication.getName())) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).<Void>build();
+                    }
+                    userRepository.deleteById(id);
+                    return ResponseEntity.noContent().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/admin/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminUserResponse> updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequest request) {
+        Role newRole;
+        try {
+            newRole = Role.valueOf(request.role());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidRoleException(request.role());
+        }
+
         return userRepository.findById(id)
                 .map(user -> {
-                    user.setRole(Role.valueOf(request.role()));
+                    user.setRole(newRole);
                     userRepository.save(user);
                     return ResponseEntity.ok(new AdminUserResponse(
                             String.valueOf(user.getId()), user.getName(), user.getEmail(), user.getPhone(), user.getRole().name()
