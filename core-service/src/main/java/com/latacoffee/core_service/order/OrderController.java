@@ -153,4 +153,20 @@ public class OrderController {
                 String.valueOf(order.getId()), order.getTime(), order.getStatus().name(), order.getTotal(), items
         );
     }
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<OrderResponse> cancel(@PathVariable Long id, Authentication authentication) {
+        return orderRepository.findById(id)
+                .map(order -> {
+                        if (!order.getUserEmail().equals(authentication.getName())) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).<OrderResponse>build();
+                        }
+                        if (order.getStatus() != OrderStatus.PENDING) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).<OrderResponse>build();
+                        }
+                        order.setStatus(OrderStatus.CANCELLED);
+                        orderRepository.save(order);
+                        return ResponseEntity.ok(toResponse(order));
+                })
+                .orElse(ResponseEntity.notFound().build());
+        }
 }
