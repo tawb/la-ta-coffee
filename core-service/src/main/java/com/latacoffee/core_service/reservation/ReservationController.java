@@ -95,7 +95,7 @@ public class ReservationController {
                     if (reservation.getStatus() != ReservationStatus.PENDING) {
                         return ResponseEntity.status(HttpStatus.CONFLICT).<ReservationResponse>build();
                     }
-                    reservation.setStatus(ReservationStatus.REJECTED);
+                    reservation.setStatus(ReservationStatus.CANCELLED);
                     reservationRepository.save(reservation);
                     return ResponseEntity.ok(toResponse(reservation));
                 })
