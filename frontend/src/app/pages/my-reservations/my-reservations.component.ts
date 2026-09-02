@@ -21,10 +21,16 @@ export class MyReservationsComponent implements OnInit {
   reservations: ReservationHistoryItem[] = [];
   loading = true;
   error = false;
+  cancellingId: string | null = null;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    this.loadReservations();
+  }
+
+  loadReservations() {
+    this.loading = true;
     this.http.get<ReservationHistoryItem[]>('/api/reservations/me').subscribe({
       next: (data) => {
         this.reservations = data;
@@ -33,6 +39,20 @@ export class MyReservationsComponent implements OnInit {
       error: () => {
         this.error = true;
         this.loading = false;
+      }
+    });
+  }
+
+  cancelReservation(id: string) {
+    this.cancellingId = id;
+    this.http.put<ReservationHistoryItem>(`/api/reservations/${id}/cancel`, {}).subscribe({
+      next: () => {
+        this.cancellingId = null;
+        this.loadReservations();
+      },
+      error: () => {
+        this.cancellingId = null;
+        alert('Could not cancel this reservation.');
       }
     });
   }
