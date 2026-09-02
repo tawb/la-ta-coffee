@@ -154,5 +154,39 @@ export class AdminPageComponent implements OnInit {
 
   statusKeys(map: { [key: string]: number }): string[] {//converts it into a real array of strings so we can loop through it 
     return Object.keys(map);
+
   }
+  deletingUserId: string | null = null;
+deleteUser(id: string) {
+  if (!confirm('Delete this user? This cannot be undone.')) return;
+  this.deletingUserId = id;
+  this.http.delete(`/api/users/admin/${id}`).subscribe({
+    next: () => {
+      this.deletingUserId = null;
+      this.loadUsers(this.usersPage);
+    },
+    error: (err) => {
+      this.deletingUserId = null;
+      alert(err.status === 409 ? "You can't delete your own account." : 'Could not delete this user.');
+    }
+  });
+}
+updateUserRole(id: string, role: string) {
+  this.http.put(`/api/users/admin/${id}/role`, { role }).subscribe({
+    next: () => this.loadUsers(this.usersPage),
+    error: () => alert('Could not update this user\'s role.')
+  });
+}
+updateOrderStatus(id: string, status: string) {
+  this.http.put(`/api/orders/admin/${id}/status`, { status }).subscribe({
+    next: () => this.loadOrders(this.ordersPage),
+    error: () => alert('Could not update this order\'s status.')
+  });
+}
+updateReservationStatus(id: string, status: string) {
+  this.http.put(`/api/reservations/admin/${id}/status`, { status }).subscribe({
+    next: () => this.loadReservations(this.reservationsPage),
+    error: () => alert('Could not update this reservation\'s status.')
+  });
+}
 }

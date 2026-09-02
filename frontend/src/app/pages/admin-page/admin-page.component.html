@@ -55,6 +55,7 @@
               <th>Status</th>
               <th>Total</th>
               <th>Items</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +68,25 @@
                 <td>
                   @for (item of order.items; track item.name) {
                     <span class="item-chip">{{ item.name }}</span>
+                  }
+                </td>
+                <td>
+                  @for (item of order.items; track item.name) {
+                    <span class="item-chip">{{ item.name }}</span>
+                  }
+                </td>
+                <td class="actions">
+                  @if (order.status === 'PENDING') {
+                    <button class="action-btn action-btn--confirm" (click)="updateOrderStatus(order.id, 'PREPARING')">Start</button>
+                  }
+                  @if (order.status === 'PREPARING') {
+                    <button class="action-btn action-btn--confirm" (click)="updateOrderStatus(order.id, 'READY')">Ready</button>
+                  }
+                  @if (order.status === 'READY') {
+                    <button class="action-btn action-btn--confirm" (click)="updateOrderStatus(order.id, 'COMPLETED')">Complete</button>
+                  }
+                  @if (order.status !== 'COMPLETED' && order.status !== 'CANCELLED') {
+                    <button class="action-btn action-btn--reject" (click)="updateOrderStatus(order.id, 'CANCELLED')">Cancel</button>
                   }
                 </td>
               </tr>
@@ -99,6 +119,7 @@
               <th>Time</th>
               <th>Party</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -109,6 +130,12 @@
                 <td>{{ r.time }}</td>
                 <td>{{ r.party }}</td>
                 <td>{{ r.status }}</td>
+                <td class="actions">
+                  @if (r.status === 'PENDING') {
+                    <button class="action-btn action-btn--confirm" (click)="updateReservationStatus(r.id, 'CONFIRMED')">Confirm</button>
+                    <button class="action-btn action-btn--reject" (click)="updateReservationStatus(r.id, 'REJECTED')">Reject</button>
+                  }
+                </td>
               </tr>
             }
           </tbody>
@@ -140,6 +167,7 @@
               <th>Email</th>
               <th>Phone</th>
               <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -149,7 +177,22 @@
                 <td>{{ u.name }}</td>
                 <td>{{ u.email }}</td>
                 <td>{{ u.phone }}</td>
-                <td>{{ u.role }}</td>
+                
+                <td>
+                <select class="role-select" [value]="u.role" (change)="updateUserRole(u.id, $any($event.target).value)">
+                  <option value="CUSTOMER">CUSTOMER</option>
+                  <option value="ADMIN">ADMIN</option>
+                </select>
+              </td>
+              <td class="actions">
+                <button
+                  class="action-btn action-btn--delete"
+                  [disabled]="deletingUserId === u.id"
+                  (click)="deleteUser(u.id)"
+                >
+                  {{ deletingUserId === u.id ? 'Deleting…' : 'Delete' }}
+                </button>
+              </td>
               </tr>
             }
           </tbody>
