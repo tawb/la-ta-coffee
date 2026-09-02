@@ -13,9 +13,12 @@
     <button class="nav__ic" (click)="modalService.open('account')" aria-label="Account">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
     </button>
-        @if (authService.isLoggedIn()) {
+      @if (authService.isLoggedIn()) {
+      @if (authService.isAdmin()) {
+        <a class="nav__login" routerLink="/admin">Admin</a>
+      }
       <button class="nav__login" (click)="logout()">Log out</button>
-    } @else {
+    } @else { 
       <a class="nav__login" routerLink="/login">Log in</a>
       <a class="nav__cta" routerLink="/signup" appMagnetic>Sign up</a>
     }
@@ -30,7 +33,10 @@
   <a routerLink="/" fragment="cups" (click)="menuOpen.set(false)">Cups</a>
   <a routerLink="/" fragment="menu" (click)="menuOpen.set(false)">Menu</a>
   <a routerLink="/" fragment="visit" (click)="menuOpen.set(false)">Visit</a>
-     @if (authService.isLoggedIn()) {
+        @if (authService.isLoggedIn()) {
+      @if (authService.isAdmin()) {
+        <a class="nav__login" routerLink="/admin" (click)="menuOpen.set(false)">Admin</a>
+      }
       <button class="nav__login" (click)="logout()">Log out</button>
     } @else {
       <a class="nav__login" routerLink="/login">Log in</a>
