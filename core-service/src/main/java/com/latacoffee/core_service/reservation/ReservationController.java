@@ -26,9 +26,11 @@ import jakarta.validation.Valid;
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+    private final ReservationMapper mapper;
 
-    public ReservationController(ReservationRepository reservationRepository) {
+    public ReservationController(ReservationRepository reservationRepository, ReservationMapper mapper) {
         this.reservationRepository = reservationRepository;
+        this.mapper = mapper;
     }
 
     @PostMapping
@@ -43,7 +45,7 @@ public class ReservationController {
         );
         reservationRepository.save(reservation);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(reservation));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(reservation));
     }
 
     @GetMapping("/me")
@@ -51,22 +53,18 @@ public class ReservationController {
         String userEmail = authentication.getName();
 
         return reservationRepository.findByUserEmail(userEmail).stream()
-                .map(this::toResponse)
+                .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    private ReservationResponse toResponse(Reservation r) {
-        return new ReservationResponse(
-                String.valueOf(r.getId()), r.getDate(), r.getTime(), r.getParty(), r.getStatus().name()
-        );
-    }
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
     public Page<ReservationResponse> allReservations(
             @PageableDefault(size = 20, sort = "id", direction = Direction.DESC) Pageable pageable
     ) {
-        return reservationRepository.findAll(pageable).map(this::toResponse);
+        return reservationRepository.findAll(pageable).map(mapper::toResponse);
     }
+
     @PutMapping("/admin/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ReservationResponse> updateStatus(@PathVariable Long id, @RequestBody ReservationStatusUpdateRequest request) {
@@ -81,10 +79,11 @@ public class ReservationController {
                 .map(reservation -> {
                     reservation.setStatus(newStatus);
                     reservationRepository.save(reservation);
-                    return ResponseEntity.ok(toResponse(reservation));
+                    return ResponseEntity.ok(mapper.toResponse(reservation));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
     @PutMapping("/{id}/cancel")
     public ResponseEntity<ReservationResponse> cancel(@PathVariable Long id, Authentication authentication) {
         return reservationRepository.findById(id)
@@ -97,7 +96,7 @@ public class ReservationController {
                     }
                     reservation.setStatus(ReservationStatus.CANCELLED);
                     reservationRepository.save(reservation);
-                    return ResponseEntity.ok(toResponse(reservation));
+                    return ResponseEntity.ok(mapper.toResponse(reservation));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
