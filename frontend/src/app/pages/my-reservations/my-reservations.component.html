@@ -14,6 +14,15 @@
           <span>{{ r.date }} at {{ r.time }}</span>
           <span>{{ r.party }} guests</span>
           <span class="status">{{ r.status }}</span>
+          @if (r.status === 'PENDING') {
+            <button
+              class="cancel-btn"
+              [disabled]="cancellingId === r.id"
+              (click)="cancelReservation(r.id)"
+            >
+              {{ cancellingId === r.id ? 'Cancelling…' : 'Cancel reservation' }}
+            </button>
+          }
         </li>
       }
     </ul>
