@@ -12,6 +12,7 @@ public class AuthServiceClient {
         this.restClient = RestClient.create("http://auth-service:8081");
     }
 
+    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
     public UserProfileResponse getUserProfile(String email) {
         return restClient.get()
                 .uri("/api/users/by-email/{email}", email)
