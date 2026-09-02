@@ -1,5 +1,6 @@
 package com.latacoffee.core_service.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -7,8 +8,10 @@ import org.springframework.web.client.RestClient;
 public class AuthServiceClient {
 
     private final RestClient restClient;
+    private final String internalApiSecret;
 
-    public AuthServiceClient() {
+    public AuthServiceClient(@Value("${internal.api.secret}") String internalApiSecret) {
+        this.internalApiSecret = internalApiSecret;
         this.restClient = RestClient.create("http://auth-service:8081");
     }
 
@@ -16,6 +19,7 @@ public class AuthServiceClient {
     public UserProfileResponse getUserProfile(String email) {
         return restClient.get()
                 .uri("/api/users/by-email/{email}", email)
+                .header("X-Internal-Secret", internalApiSecret)
                 .retrieve()
                 .body(UserProfileResponse.class);
     }
