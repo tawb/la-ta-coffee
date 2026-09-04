@@ -163,8 +163,8 @@
                                               <configuration>
                                                       <annotationProcessorPaths>
                                                               <path>
-                                                                      <groupId>org.projec
-                                                                      <artifactId>lombok<
+                                                                    <groupId>org.projectlombok</groupId>
+                                                                    <artifactId>lombok</artifactId>
                                                               </path>
                                                       </annotationProcessorPaths>
                                               </configuration>
@@ -178,8 +178,8 @@
                                               <configuration>
                                                       <annotationProcessorPaths>
                                                               <path>
-                                                                      <groupId>org.projec
-                                                                      <artifactId>lombok<
+                                                                    <groupId>org.projectlombok</groupId>
+                                                                    <artifactId>lombok</artifactId>
                                                               </path>
                                                       </annotationProcessorPaths>
                                               </configuration>
