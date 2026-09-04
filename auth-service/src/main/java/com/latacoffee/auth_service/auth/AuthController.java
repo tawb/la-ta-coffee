@@ -27,21 +27,23 @@ public class AuthController {
     private final JwtService jwtService;
     private final PasswordResetTokenRepository resetTokenRepository;
     private final EmailService emailService;
+    private final PasswordResetRateLimiter rateLimiter;
 
     public AuthController(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            PasswordResetTokenRepository resetTokenRepository,
-            EmailService emailService
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.resetTokenRepository = resetTokenRepository;
-        this.emailService = emailService;
-    }
-
+        UserRepository userRepository,
+        PasswordEncoder passwordEncoder,
+        JwtService jwtService,
+        PasswordResetTokenRepository resetTokenRepository,
+        EmailService emailService,
+        PasswordResetRateLimiter rateLimiter
+) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.jwtService = jwtService;
+    this.resetTokenRepository = resetTokenRepository;
+    this.emailService = emailService;
+    this.rateLimiter = rateLimiter;
+}
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -83,6 +85,10 @@ public class AuthController {
 
     @PostMapping("/password-reset/request")
     public ResponseEntity<Void> requestPasswordReset(@Valid @RequestBody PasswordResetRequestDto request) {
+        if (!rateLimiter.tryConsume(request.getEmail())) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+        }
+
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AccountNotFoundException(request.getEmail()));
 
