@@ -3,8 +3,13 @@ package com.latacoffee.core_service.reservation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,5 +57,12 @@ public class ReservationController {
         return new ReservationResponse(
                 String.valueOf(r.getId()), r.getDate(), r.getTime(), r.getParty(), r.getStatus().name()
         );
+    }
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<ReservationResponse> allReservations(
+            @PageableDefault(size = 20, sort = "id", direction = Direction.DESC) Pageable pageable
+    ) {
+        return reservationRepository.findAll(pageable).map(this::toResponse);
     }
 }

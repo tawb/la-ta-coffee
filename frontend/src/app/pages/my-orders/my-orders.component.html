@@ -20,6 +20,15 @@
               <li>{{ item.name }} — ${{ item.unitPrice.toFixed(2) }}</li>
             }
           </ul>
+          @if (o.status === 'PENDING') {
+            <button
+              class="cancel-btn"
+              [disabled]="cancellingId === o.id"
+              (click)="cancelOrder(o.id)"
+            >
+              {{ cancellingId === o.id ? 'Cancelling…' : 'Cancel order' }}
+            </button>
+          }
         </li>
       }
     </ul>

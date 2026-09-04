@@ -1,11 +1,18 @@
 package com.latacoffee.core_service.order;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.latacoffee.core_service.common.AdminStatsResponse;
 import com.latacoffee.core_service.common.AuthServiceClient;
 import com.latacoffee.core_service.common.UserProfileResponse;
 import com.latacoffee.core_service.config.RabbitMQConfig;
 import com.latacoffee.core_service.menu.MenuItem;
 import com.latacoffee.core_service.menu.MenuItemRepository;
+import com.latacoffee.core_service.reservation.ReservationRepository;
 
 import jakarta.validation.Valid;
 
@@ -29,15 +38,38 @@ public class OrderController {
     private final MenuItemRepository menuItemRepository;
     private final AuthServiceClient authServiceClient;
     private final RabbitTemplate rabbitTemplate;
+    private final ReservationRepository reservationRepository;
+    
 
     public OrderController(OrderRepository orderRepository, MenuItemRepository menuItemRepository,
-                            AuthServiceClient authServiceClient, RabbitTemplate rabbitTemplate) {
+                            AuthServiceClient authServiceClient, RabbitTemplate rabbitTemplate,ReservationRepository reservationRepository) {
         this.orderRepository = orderRepository;
         this.menuItemRepository = menuItemRepository;
         this.authServiceClient = authServiceClient;
         this.rabbitTemplate = rabbitTemplate;
-    }
+        this.reservationRepository = reservationRepository;
 
+    }
+    @GetMapping("/admin/stats")
+    @PreAuthorize("hasRole('ADMIN')")
+    public AdminStatsResponse stats() {
+        Map<String, Long> ordersByStatus = new HashMap<>();
+        for (Object[] row : orderRepository.countOrdersByStatus()) {
+                ordersByStatus.put(row[0].toString(), (Long) row[1]);
+                        }
+        Map<String, Long> reservationsByStatus = new HashMap<>();
+        for (Object[] row : reservationRepository.countReservationsByStatus()) {
+                reservationsByStatus.put(row[0].toString(), (Long) row[1]);
+        }
+
+        return new AdminStatsResponse(
+                orderRepository.getTotalRevenue(),
+                orderRepository.getAverageOrderValue(),
+                ordersByStatus,
+                reservationRepository.getAveragePartySize(),
+                reservationsByStatus
+        );
+        }
     @PostMapping
     public ResponseEntity<OrderResponse> create(
             @Valid @RequestBody OrderRequest request,
@@ -85,6 +117,13 @@ public class OrderController {
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+     public Page<OrderResponse> allOrders(
+                @PageableDefault(size = 20, sort = "id", direction = Direction.DESC) Pageable pageable
+        ) {
+        return orderRepository.findAll(pageable).map(this::toResponse);
+        }
 
     private OrderResponse toResponse(Order order) {
         List<OrderItemResponse> items = order.getItems().stream()

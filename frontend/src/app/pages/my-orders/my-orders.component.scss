@@ -1,27 +1,64 @@
 .history {
-  max-width: 600px;
-  margin: 4rem auto;
+  max-width: 700px;
+  margin: 3rem auto;
   padding: 0 1rem;
 }
+
 .history__list {
   list-style: none;
   padding: 0;
+  margin: 1.5rem 0 0;
 }
+
 .history__item {
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--faint);
 }
+
 .history__item > div {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
+
 .status {
-  opacity: 0.7;
-  text-transform: capitalize;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--dim);
+  text-transform: uppercase;
 }
+
 .items {
   list-style: none;
-  padding-left: 1rem;
-  opacity: 0.8;
-  font-size: 0.9em;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  color: var(--dim);
+  font-size: 0.9rem;
+}
+
+.cancel-btn {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  background: transparent;
+  border: 1px solid var(--faint);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s var(--e);
+}
+
+.cancel-btn:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+
+.cancel-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
