@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS menu_category (
+CREATE TABLE IF NOT EXISTS menu_category (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
@@ -18,9 +18,9 @@ INSERT INTO menu_category (id, name) VALUES
     (4, 'Matcha');
 
 INSERT INTO menu_item (id, name, note, price, category_id) VALUES
-    ('filter-yirgacheffe', 'Yirgacheffe', 'Ethiopia ┬╖ washed ┬╖ jasmine, bergamot', 20, 1),
-    ('filter-kirinyaga', 'Kirinyaga', 'Kenya ┬╖ washed ┬╖ blackcurrant', 22, 1),
-    ('filter-narino', 'Nari├▒o', 'Colombia ┬╖ honey ┬╖ red plum', 20, 1),
+    ('filter-yirgacheffe', 'Yirgacheffe', 'Ethiopia · washed · jasmine, bergamot', 20, 1),
+    ('filter-kirinyaga', 'Kirinyaga', 'Kenya · washed · blackcurrant', 22, 1),
+    ('filter-narino', 'Nariño', 'Colombia · honey · red plum', 20, 1),
     ('espresso-espresso', 'Espresso', 'Single origin, whatever is open', 10, 2),
     ('espresso-cortado', 'Cortado', 'Equal parts', 14, 2),
     ('espresso-flat-white', 'Flat White', 'Six ounces', 16, 2),

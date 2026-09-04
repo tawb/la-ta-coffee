@@ -34,6 +34,7 @@ export class AuthService {
   // Tracks login state app-wide so components (nav, guards) can react to it.
   isLoggedIn = signal<boolean>(!!localStorage.getItem('token'));
   currentEmail = signal<string | null>(localStorage.getItem('userEmail'));
+  currentRole = signal<string | null>(localStorage.getItem('userRole'));
 
   constructor(private http: HttpClient) {}
 
@@ -55,11 +56,17 @@ export class AuthService {
     );
   }
 
+  isAdmin(): boolean {
+    return this.currentRole() === 'ADMIN';
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
     this.isLoggedIn.set(false);
     this.currentEmail.set(null);
+    this.currentRole.set(null);
   }
 
   private storeSession(response: LoginResponse | SignupResponse) {
@@ -67,7 +74,24 @@ export class AuthService {
     // as "Authorization: Bearer <token>" to every outgoing request.
     localStorage.setItem('token', response.token);
     localStorage.setItem('userEmail', response.email);
+
+    const role = this.decodeRole(response.token);
+    if (role) {
+      localStorage.setItem('userRole', role);
+    }
+
     this.isLoggedIn.set(true);
     this.currentEmail.set(response.email);
+    this.currentRole.set(role);
+  }
+
+  private decodeRole(token: string): string | null {
+    try {
+      const payload = token.split('.')[1];
+      const decoded = JSON.parse(atob(payload));
+      return decoded.role ?? null;
+    } catch {
+      return null;
+    }
   }
 }

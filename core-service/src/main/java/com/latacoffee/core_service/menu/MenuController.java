@@ -1,5 +1,6 @@
 package com.latacoffee.core_service.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,15 +23,24 @@ public class MenuController {
 
     @GetMapping
     public List<MenuCategoryDto> getMenu() {
-        return categoryRepository.findAll().stream()
-                .map(category -> new MenuCategoryDto(
-                        category.getName(),
-                        itemRepository.findAll().stream()
-                                .filter(item -> item.getCategory().getId().equals(category.getId()))
-                                .map(MenuItemDto::from)
-                                .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
+        List<MenuCategory> categories = categoryRepository.findAll();
+        List<MenuItem> allItems = itemRepository.findAll();
+
+        List<MenuCategoryDto> result = new ArrayList<>();
+
+        for (MenuCategory category : categories) {
+            List<MenuItemDto> itemsInThisCategory = new ArrayList<>();
+
+            for (MenuItem item : allItems) {
+                if (item.getCategory().getId().equals(category.getId())) {
+                    itemsInThisCategory.add(MenuItemDto.from(item));
+                }
+            }
+
+            result.add(new MenuCategoryDto(category.getName(), itemsInThisCategory));
+        }
+
+        return result;
     }
 
     @GetMapping("/search")
