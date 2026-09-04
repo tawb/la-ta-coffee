@@ -9,6 +9,7 @@ import com.latacoffee.auth_service.auth.AccountNotFoundException;
 import com.latacoffee.auth_service.auth.EmailAlreadyExistsException;
 import com.latacoffee.auth_service.auth.InvalidCredentialsException;
 import com.latacoffee.auth_service.auth.InvalidResetTokenException;
+import com.latacoffee.auth_service.auth.InvalidRoleException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccountNotFound(AccountNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("ACCOUNT_NOT_FOUND", ex.getMessage()));
+    }
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRole(InvalidRoleException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("INVALID_ROLE", ex.getMessage()));
     }
         
 }

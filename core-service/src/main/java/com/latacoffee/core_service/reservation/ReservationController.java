@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,5 +66,23 @@ public class ReservationController {
             @PageableDefault(size = 20, sort = "id", direction = Direction.DESC) Pageable pageable
     ) {
         return reservationRepository.findAll(pageable).map(this::toResponse);
+    }
+    @PutMapping("/admin/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReservationResponse> updateStatus(@PathVariable Long id, @RequestBody ReservationStatusUpdateRequest request) {
+        ReservationStatus newStatus;
+        try {
+            newStatus = ReservationStatus.valueOf(request.status());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidReservationStatusException(request.status());
+        }
+
+        return reservationRepository.findById(id)
+                .map(reservation -> {
+                    reservation.setStatus(newStatus);
+                    reservationRepository.save(reservation);
+                    return ResponseEntity.ok(toResponse(reservation));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
