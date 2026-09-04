@@ -85,4 +85,20 @@ public class ReservationController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<ReservationResponse> cancel(@PathVariable Long id, Authentication authentication) {
+        return reservationRepository.findById(id)
+                .map(reservation -> {
+                    if (!reservation.getUserEmail().equals(authentication.getName())) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).<ReservationResponse>build();
+                    }
+                    if (reservation.getStatus() != ReservationStatus.PENDING) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).<ReservationResponse>build();
+                    }
+                    reservation.setStatus(ReservationStatus.CANCELLED);
+                    reservationRepository.save(reservation);
+                    return ResponseEntity.ok(toResponse(reservation));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
