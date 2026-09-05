@@ -24,7 +24,7 @@ public class EmailService {
         this.templateEngine = templateEngine;
         this.frontendUrl = frontendUrl;
     }
-
+    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         String resetLink = frontendUrl + "/reset-password?token=" + resetToken;
 
@@ -48,6 +48,7 @@ public class EmailService {
             throw new EmailSendException("Failed to send password reset email to " + toEmail, e);
         }
     }
+    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
     public void sendWelcomeEmail(String toEmail, String name) {
         Context context = new Context();
         context.setVariable("name", name);
