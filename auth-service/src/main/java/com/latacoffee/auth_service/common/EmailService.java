@@ -48,4 +48,26 @@ public class EmailService {
             throw new EmailSendException("Failed to send password reset email to " + toEmail, e);
         }
     }
+    public void sendWelcomeEmail(String toEmail, String name) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("siteUrl", frontendUrl);
+
+        String htmlBody = templateEngine.process("welcome-email", context);
+        String plainTextBody = "Welcome, " + name + ".\n\n" +
+                "Your account is ready. Twelve seats, one table, roasted this week, gone when it's gone.\n\n" +
+                "Visit us at " + frontendUrl;
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(toEmail);
+            helper.setSubject("Welcome to La Ta Coffee");
+            helper.setText(plainTextBody, htmlBody);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new EmailSendException("Failed to send welcome email to " + toEmail, e);
+        }
+    }
 }
