@@ -84,7 +84,7 @@ public class AuthController {
     }
 
     @PostMapping("/password-reset/request")
-    public ResponseEntity<Void> requestPasswordReset(@Valid @RequestBody PasswordResetRequestDto request) {
+    public ResponseEntity<Void> requestPasswordReset(@Valid @RequestBody PasswordResetRequestDto request) throws Exception {
         if (!rateLimiter.tryConsume(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
         }
