@@ -59,21 +59,23 @@ public class OrderController {
     public AdminStatsResponse stats() {
         Map<String, Long> ordersByStatus = new HashMap<>();
         for (Object[] row : orderRepository.countOrdersByStatus()) {
-            ordersByStatus.put(row[0].toString(), (Long) row[1]);
+                String status = row[0] != null ? row[0].toString() : "UNKNOWN";
+                ordersByStatus.put(status, (Long) row[1]);
         }
         Map<String, Long> reservationsByStatus = new HashMap<>();
         for (Object[] row : reservationRepository.countReservationsByStatus()) {
-            reservationsByStatus.put(row[0].toString(), (Long) row[1]);
+                String status = row[0] != null ? row[0].toString() : "UNKNOWN";
+                reservationsByStatus.put(status, (Long) row[1]);
         }
 
-        return new AdminStatsResponse(
-                orderRepository.getTotalRevenue(),
-                orderRepository.getAverageOrderValue(),
-                ordersByStatus,
-                reservationRepository.getAveragePartySize(),
-                reservationsByStatus
-        );
-    }
+    return new AdminStatsResponse(
+            orderRepository.getTotalRevenue(),
+            orderRepository.getAverageOrderValue(),
+            ordersByStatus,
+            reservationRepository.getAveragePartySize(),
+            reservationsByStatus
+    );
+}
 
     @PutMapping("/admin/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
