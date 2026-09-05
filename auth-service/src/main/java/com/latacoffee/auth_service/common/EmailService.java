@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.latacoffee.auth_service.auth.EmailSendException;
+
 import jakarta.mail.internet.MimeMessage;
 
 @Service
@@ -23,21 +25,27 @@ public class EmailService {
         this.frontendUrl = frontendUrl;
     }
 
-    public void sendPasswordResetEmail(String toEmail, String resetToken) throws Exception {
+    public void sendPasswordResetEmail(String toEmail, String resetToken) {
         String resetLink = frontendUrl + "/reset-password?token=" + resetToken;
 
         Context context = new Context();
         context.setVariable("resetLink", resetLink);
 
         String htmlBody = templateEngine.process("password-reset-email", context);
-        //System.out.println(htmlBody);
+        String plainTextBody = "Someone requested a password reset for your account.\n\n" +
+                "Click this link to set a new password:\n" + resetLink + "\n\n" +
+                "This link expires in 30 minutes. If you didn't request this, ignore this email.";
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setTo(toEmail);
-        helper.setSubject("Reset your La Ta Coffee password");
-        helper.setText(htmlBody, true);
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(toEmail);
+            helper.setSubject("Reset your La Ta Coffee password");
+            helper.setText(plainTextBody, htmlBody);
 
-        mailSender.send(message);
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new EmailSendException("Failed to send password reset email to " + toEmail, e);
+        }
     }
 }
