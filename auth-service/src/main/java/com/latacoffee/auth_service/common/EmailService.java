@@ -3,8 +3,6 @@ package com.latacoffee.auth_service.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -12,20 +10,18 @@ import org.thymeleaf.context.Context;
 
 import com.latacoffee.auth_service.auth.EmailSendException;
 
-import jakarta.mail.internet.MimeMessage;
-
 @Service
 public class EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
-    private final JavaMailSender mailSender;
+    private final MailProvider mailProvider;
     private final TemplateEngine templateEngine;
     private final String frontendUrl;
 
-    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine,
+    public EmailService(MailProvider mailProvider, TemplateEngine templateEngine,
                          @Value("${app.frontend-url}") String frontendUrl) {
-        this.mailSender = mailSender;
+        this.mailProvider = mailProvider;
         this.templateEngine = templateEngine;
         this.frontendUrl = frontendUrl;
     }
@@ -51,17 +47,7 @@ public class EmailService {
                 "Click this link to set a new password:\n" + resetLink + "\n\n" +
                 "This link expires in 30 minutes. If you didn't request this, ignore this email.";
 
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(toEmail);
-            helper.setSubject("Reset your La Ta Coffee password");
-            helper.setText(plainTextBody, htmlBody);
-
-            mailSender.send(message);
-        } catch (Exception e) {
-            throw new EmailSendException("Failed to send password reset email to " + toEmail, e);
-        }
+        mailProvider.send(toEmail, "Reset your La Ta Coffee password", plainTextBody, htmlBody);
     }
 
     @Async
@@ -84,16 +70,6 @@ public class EmailService {
                 "Your account is ready. Twelve seats, one table, roasted this week, gone when it's gone.\n\n" +
                 "Visit us at " + frontendUrl;
 
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(toEmail);
-            helper.setSubject("Welcome to La Ta Coffee");
-            helper.setText(plainTextBody, htmlBody);
-
-            mailSender.send(message);
-        } catch (Exception e) {
-            throw new EmailSendException("Failed to send welcome email to " + toEmail, e);
-        }
+        mailProvider.send(toEmail, "Welcome to La Ta Coffee", plainTextBody, htmlBody);
     }
 }
