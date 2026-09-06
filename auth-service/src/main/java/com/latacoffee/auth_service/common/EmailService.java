@@ -13,13 +13,13 @@ public class EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
-    private final MailProvider mailProvider;
+    private final RetryableMailSender retryableMailSender;
     private final TemplateEngine templateEngine;
     private final String frontendUrl;
 
-    public EmailService(MailProvider mailProvider, TemplateEngine templateEngine,
+    public EmailService(RetryableMailSender retryableMailSender, TemplateEngine templateEngine,
                          @Value("${app.frontend-url}") String frontendUrl) {
-        this.mailProvider = mailProvider;
+        this.retryableMailSender = retryableMailSender;
         this.templateEngine = templateEngine;
         this.frontendUrl = frontendUrl;
     }
@@ -37,7 +37,7 @@ public class EmailService {
                     "Click this link to set a new password:\n" + resetLink + "\n\n" +
                     "This link expires in 30 minutes. If you didn't request this, ignore this email.";
 
-            sendWithRetry(toEmail, "Reset your La Ta Coffee password", plainTextBody, htmlBody);
+            retryableMailSender.send(toEmail, "Reset your La Ta Coffee password", plainTextBody, htmlBody);
         } catch (Exception e) {
             log.error("Password reset email ultimately failed for {}: {}", toEmail, e.getMessage());
         }
@@ -55,14 +55,9 @@ public class EmailService {
                     "Your account is ready. Twelve seats, one table, roasted this week, gone when it's gone.\n\n" +
                     "Visit us at " + frontendUrl;
 
-            sendWithRetry(toEmail, "Welcome to La Ta Coffee", plainTextBody, htmlBody);
+            retryableMailSender.send(toEmail, "Welcome to La Ta Coffee", plainTextBody, htmlBody);
         } catch (Exception e) {
             log.error("Welcome email ultimately failed for {}: {}", toEmail, e.getMessage());
         }
-    }
-
-    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
-    private void sendWithRetry(String toEmail, String subject, String plainTextBody, String htmlBody) {
-        mailProvider.send(toEmail, subject, plainTextBody, htmlBody);
     }
 }
