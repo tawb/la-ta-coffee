@@ -56,11 +56,7 @@ public class AuthController {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getName(), request.getPhone(), request.getEmail(), hashedPassword);
         User saved = userRepository.save(user);
-        try {
-            emailService.sendWelcomeEmail(saved.getEmail(), saved.getName());
-        } catch (EmailSendException e) {
-            log.warn("Welcome email failed to send for {}: {}", saved.getEmail(), e.getMessage());
-        }
+        emailService.sendWelcomeEmail(saved.getEmail(), saved.getName());
 
         String token = jwtService.generateToken(saved.getEmail(), saved.getRole().name());
         return ResponseEntity.status(HttpStatus.CREATED)

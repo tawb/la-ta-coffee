@@ -1,8 +1,11 @@
 package com.latacoffee.auth_service.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -14,6 +17,8 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final String frontendUrl;
@@ -24,8 +29,18 @@ public class EmailService {
         this.templateEngine = templateEngine;
         this.frontendUrl = frontendUrl;
     }
-    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
+
+    @Async
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
+        try {
+            sendPasswordResetEmailWithRetry(toEmail, resetToken);
+        } catch (EmailSendException e) {
+            log.error("Password reset email ultimately failed for {}: {}", toEmail, e.getMessage());
+        }
+    }
+
+    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
+    private void sendPasswordResetEmailWithRetry(String toEmail, String resetToken) {
         String resetLink = frontendUrl + "/reset-password?token=" + resetToken;
 
         Context context = new Context();
@@ -48,8 +63,18 @@ public class EmailService {
             throw new EmailSendException("Failed to send password reset email to " + toEmail, e);
         }
     }
-    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
+
+    @Async
     public void sendWelcomeEmail(String toEmail, String name) {
+        try {
+            sendWelcomeEmailWithRetry(toEmail, name);
+        } catch (EmailSendException e) {
+            log.error("Welcome email ultimately failed for {}: {}", toEmail, e.getMessage());
+        }
+    }
+
+    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
+    private void sendWelcomeEmailWithRetry(String toEmail, String name) {
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("siteUrl", frontendUrl);
