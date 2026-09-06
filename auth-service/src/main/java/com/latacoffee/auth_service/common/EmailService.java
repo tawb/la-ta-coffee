@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.latacoffee.auth_service.auth.EmailSendException;
-
 @Service
 public class EmailService {
 
@@ -29,47 +27,42 @@ public class EmailService {
     @Async
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         try {
-            sendPasswordResetEmailWithRetry(toEmail, resetToken);
-        } catch (EmailSendException e) {
+            String resetLink = frontendUrl + "/reset-password?token=" + resetToken;
+
+            Context context = new Context();
+            context.setVariable("resetLink", resetLink);
+
+            String htmlBody = templateEngine.process("password-reset-email", context);
+            String plainTextBody = "Someone requested a password reset for your account.\n\n" +
+                    "Click this link to set a new password:\n" + resetLink + "\n\n" +
+                    "This link expires in 30 minutes. If you didn't request this, ignore this email.";
+
+            sendWithRetry(toEmail, "Reset your La Ta Coffee password", plainTextBody, htmlBody);
+        } catch (Exception e) {
             log.error("Password reset email ultimately failed for {}: {}", toEmail, e.getMessage());
         }
-    }
-
-    @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
-    private void sendPasswordResetEmailWithRetry(String toEmail, String resetToken) {
-        String resetLink = frontendUrl + "/reset-password?token=" + resetToken;
-
-        Context context = new Context();
-        context.setVariable("resetLink", resetLink);
-
-        String htmlBody = templateEngine.process("password-reset-email", context);
-        String plainTextBody = "Someone requested a password reset for your account.\n\n" +
-                "Click this link to set a new password:\n" + resetLink + "\n\n" +
-                "This link expires in 30 minutes. If you didn't request this, ignore this email.";
-
-        mailProvider.send(toEmail, "Reset your La Ta Coffee password", plainTextBody, htmlBody);
     }
 
     @Async
     public void sendWelcomeEmail(String toEmail, String name) {
         try {
-            sendWelcomeEmailWithRetry(toEmail, name);
-        } catch (EmailSendException e) {
+            Context context = new Context();
+            context.setVariable("name", name);
+            context.setVariable("siteUrl", frontendUrl);
+
+            String htmlBody = templateEngine.process("welcome-email", context);
+            String plainTextBody = "Welcome, " + name + ".\n\n" +
+                    "Your account is ready. Twelve seats, one table, roasted this week, gone when it's gone.\n\n" +
+                    "Visit us at " + frontendUrl;
+
+            sendWithRetry(toEmail, "Welcome to La Ta Coffee", plainTextBody, htmlBody);
+        } catch (Exception e) {
             log.error("Welcome email ultimately failed for {}: {}", toEmail, e.getMessage());
         }
     }
 
     @RetryOnFailure(maxAttempts = 3, delayMs = 1000)
-    private void sendWelcomeEmailWithRetry(String toEmail, String name) {
-        Context context = new Context();
-        context.setVariable("name", name);
-        context.setVariable("siteUrl", frontendUrl);
-
-        String htmlBody = templateEngine.process("welcome-email", context);
-        String plainTextBody = "Welcome, " + name + ".\n\n" +
-                "Your account is ready. Twelve seats, one table, roasted this week, gone when it's gone.\n\n" +
-                "Visit us at " + frontendUrl;
-
-        mailProvider.send(toEmail, "Welcome to La Ta Coffee", plainTextBody, htmlBody);
+    private void sendWithRetry(String toEmail, String subject, String plainTextBody, String htmlBody) {
+        mailProvider.send(toEmail, subject, plainTextBody, htmlBody);
     }
 }
