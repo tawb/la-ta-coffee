@@ -1,7 +1,12 @@
 package com.latacoffee.mcpserver;
+
+import java.util.List;
+
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import com.latacoffee.mcpserver.dto.MenuCategoryDto;
 
 @Component
 public class MenuTools {
@@ -13,10 +18,10 @@ public class MenuTools {
     }
 
     @Tool(description = "Get the full coffee shop menu, organized by category, with item names, notes, and prices")
-    public String getMenu() {
+    public List<MenuCategoryDto> getMenu() {
         return restClient.get()
                 .uri("/api/menu")
                 .retrieve()
-                .body(String.class);
+                .body(new org.springframework.core.ParameterizedTypeReference<List<MenuCategoryDto>>() {});
     }
 }
