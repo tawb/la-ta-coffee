@@ -1,7 +1,7 @@
 package com.latacoffee.mcpserver;
 
 import java.util.List;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.core.Authentication;
@@ -24,9 +24,9 @@ public class ReservationTools {
     public List<ReservationResponse> getMyReservations() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new SecurityException("You must be logged in to view your reservations.");
-        }
+        if (!(authentication instanceof UsernamePasswordAuthenticationToken)) {
+                throw new SecurityException("You must be logged in to view your reservations.");
+            }
 
         String rawToken = (String) authentication.getCredentials();
 

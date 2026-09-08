@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.latacoffee.mcpserver.dto.OrderResponse;
 
 @Component
@@ -23,14 +23,13 @@ public class OrderTools {
     @Tool(description = "Get the current user's own order history, including status and items for each order")
     public List<OrderResponse> getMyOrders() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new SecurityException("You must be logged in to view your orders.");
-        }
+        if (!(authentication instanceof UsernamePasswordAuthenticationToken)) {
+                    throw new SecurityException("You must be logged in to view your orders.");
+                }
+       
 
         String rawToken = (String) authentication.getCredentials();
-
-        return restClient.get()
+                return restClient.get()
                 .uri("/api/orders/me")
                 .header("Authorization", "Bearer " + rawToken)
                 .retrieve()
