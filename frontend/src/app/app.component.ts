@@ -14,15 +14,16 @@ import { CraftComponent } from './components/craft/craft.component';
 import { VisitComponent } from './components/visit/visit.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { CursorDirective } from './directives/cursor.directive';
+import { RouterLink } from '@angular/router';
+import { AuthService } from './services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet, NavComponent, HeroComponent,
-    ResetModalComponent, AccountModalComponent, SearchModalComponent,
-    RoomComponent,StatementComponent,GalleryComponent,MenuComponent,CraftComponent,
-    VisitComponent,FooterComponent,CursorDirective
-  
+  RouterOutlet, RouterLink, NavComponent, HeroComponent,
+  ResetModalComponent, AccountModalComponent, SearchModalComponent,
+  RoomComponent,StatementComponent,GalleryComponent,MenuComponent,CraftComponent,
+  VisitComponent,FooterComponent,CursorDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -30,7 +31,7 @@ import { CursorDirective } from './directives/cursor.directive';
 export class AppComponent {
   isHomePage = signal(true);
 
-  constructor(private router: Router) {
+  constructor(private router: Router, public authService: AuthService) {
   this.router.events.subscribe(event => {
     if (event instanceof NavigationEnd) {
       const pathOnly = event.urlAfterRedirects.split('#')[0].split('?')[0];

@@ -12,6 +12,7 @@ import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
 import { MyOrdersComponent } from './pages/my-orders/my-orders.component';
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', children: [] }, 
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'my-orders', component: MyOrdersComponent, canActivate: [authGuard], title: 'Order History' },
   { path: 'reset-password', component: ResetPasswordPageComponent, title: 'Reset Password' },
   { path: 'admin', component: AdminPageComponent, canActivate: [adminGuard], title: 'Admin Dashboard' },
+  { path: 'chat', component: ChatPageComponent, canActivate: [authGuard], title: 'Chat' },
   {
     path: 'confirmation/:id',
     component: ConfirmationPageComponent,
