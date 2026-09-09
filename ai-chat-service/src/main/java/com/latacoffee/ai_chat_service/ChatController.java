@@ -39,22 +39,28 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
         }
 
-        McpSyncClient mcpClient = mcpClientFactory.createClientForUser(rawToken);
-
         try {
-            SyncMcpToolCallbackProvider toolProvider = new SyncMcpToolCallbackProvider(mcpClient);
+            McpSyncClient mcpClient = mcpClientFactory.createClientForUser(rawToken);
 
-            ChatClient chatClient = chatClientBuilder.build();
+            try {
+                SyncMcpToolCallbackProvider toolProvider = new SyncMcpToolCallbackProvider(mcpClient);
 
-            String response = chatClient.prompt()
-                    .user(request.message())
-                    .tools(toolProvider)
-                    .call()
-                    .content();
+                ChatClient chatClient = chatClientBuilder.build();
 
-            return ResponseEntity.ok(response);
-        } finally {
-            mcpClient.closeGracefully();
+                String response = chatClient.prompt()
+                        .user(request.message())
+                        .tools(toolProvider)
+                        .call()
+                        .content();
+
+                return ResponseEntity.ok(response);
+            } finally {
+                mcpClient.closeGracefully();
+            }
+        } catch (McpConnectionException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Could not connect to backend services. Please try again.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. Please try again.");
         }
     }
 }

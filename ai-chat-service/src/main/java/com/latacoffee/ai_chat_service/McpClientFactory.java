@@ -23,7 +23,13 @@ public class McpClientFactory {
                 .requestTimeout(Duration.ofSeconds(10))
                 .build();
 
-        client.initialize();
+        try {
+            client.initialize();
+        } catch (Exception e) {
+            client.closeGracefully();
+            throw new McpConnectionException("Failed to connect to mcp-server", e);
+        }
+
         return client;
     }
 }
