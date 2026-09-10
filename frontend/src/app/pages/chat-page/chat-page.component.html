@@ -1,0 +1,47 @@
+<section class="chat-page">
+  <div class="chat-page__header">
+    <h1>Ask La&nbsp;Ta</h1>
+    <p class="chat-page__sub">Ask about the menu, your orders, your reservations.</p>
+  </div>
+
+  <div class="chat-page__window">
+    @if (messages.length === 0) {
+      <div class="chat-page__empty">
+        <div class="chat-page__empty-glow"></div>
+        <p>Try asking "what's on the menu" or "show me my orders"</p>
+      </div>
+    }
+
+    @for (msg of messages; track $index) {
+      <div class="chat-msg" [class.chat-msg--user]="msg.role === 'user'" [class.chat-msg--error]="msg.role === 'error'">
+        <div class="chat-msg__bubble">
+          {{ msg.content }}
+        </div>
+      </div>
+    }
+
+    @if (loading) {
+      <div class="chat-msg">
+        <div class="chat-msg__bubble chat-msg__bubble--typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <form class="chat-page__form" (ngSubmit)="sendMessage()">
+    <input
+      type="text"
+      [(ngModel)]="currentMessage"
+      name="message"
+      placeholder="Ask something..."
+      [disabled]="loading"
+      autocomplete="off"
+    />
+    <button type="submit" [disabled]="loading || !currentMessage.trim()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </button>
+  </form>
+</section>

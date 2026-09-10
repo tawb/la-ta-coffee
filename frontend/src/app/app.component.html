@@ -15,4 +15,11 @@
 <app-reset-modal></app-reset-modal>
 <app-account-modal></app-account-modal>
 <app-search-modal></app-search-modal>
+@if (authService.isLoggedIn()) {
+  <a routerLink="/chat" class="chat-fab" aria-label="Chat with La Ta">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.35 0-2.62-.32-3.75-.9L3 21l1.9-5.75A8.5 8.5 0 1 1 21 11.5z"/>
+    </svg>
+  </a>
+}
 <div class="custom-cursor" appCursor></div>
