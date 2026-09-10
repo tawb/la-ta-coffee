@@ -103,5 +103,19 @@
         condition: service_started
       discovery-server:
         condition: service_started
+
+  ai-chat-service:
+    build: ./ai-chat-service
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    ports:
+      - "8085:8085"
+    depends_on:
+      mcp-server:
+        condition: service_started
+      discovery-server:
+        condition: service_started
 volumes:
   postgres-data:
