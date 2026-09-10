@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.latacoffee.auth_service.common.EmailService;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,6 +30,7 @@ public class AuthController {
     private final PasswordResetTokenRepository resetTokenRepository;
     private final EmailService emailService;
     private final PasswordResetRateLimiter rateLimiter;
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(
         UserRepository userRepository,
@@ -53,6 +56,11 @@ public class AuthController {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getName(), request.getPhone(), request.getEmail(), hashedPassword);
         User saved = userRepository.save(user);
+        try {
+            emailService.sendWelcomeEmail(saved.getEmail(), saved.getName());
+        } catch (EmailSendException e) {
+            log.warn("Welcome email failed to send for {}: {}", saved.getEmail(), e.getMessage());
+        }
 
         String token = jwtService.generateToken(saved.getEmail(), saved.getRole().name());
         return ResponseEntity.status(HttpStatus.CREATED)
