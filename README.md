@@ -8,7 +8,7 @@
 
 Built solo by **Tawba** as a full backend and microservices learning project
 
-📋 (MCP/Email)Tracked on Jira: [training project](https://aurora2026training.atlassian.net/jira/software/projects/SCRUM/summary)
+📋 (MCP/Email) Tracked on Jira: [training project](https://aurora2026training.atlassian.net/jira/software/projects/SCRUM/summary)
 
 </div>
 
