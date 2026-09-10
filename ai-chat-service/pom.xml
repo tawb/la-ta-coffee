@@ -66,6 +66,15 @@
                         <scope>runtime</scope>
                 </dependency>
                 <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.bucket4j</groupId>
+    <artifactId>bucket4j_jdk17-core</artifactId>
+    <version>8.19.0</version>
+</dependency>
+                <dependency>
                         <groupId>me.paulschwarz</groupId>
                         <artifactId>springboot4-dotenv</artifactId>
                         <version>5.1.0</version>

@@ -1,44 +1,49 @@
 package com.latacoffee.ai_chat_service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.latacoffee.ai_chat_service.security.JwtService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.modelcontextprotocol.client.McpSyncClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
 
+    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
+    private final ChatRateLimiter rateLimiter;
     private final ChatClient.Builder chatClientBuilder;
     private final McpClientFactory mcpClientFactory;
-    private final JwtService jwtService;
-    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
-    public ChatController(ChatClient.Builder chatClientBuilder, McpClientFactory mcpClientFactory, JwtService jwtService) {
+    public ChatController(ChatClient.Builder chatClientBuilder, McpClientFactory mcpClientFactory,ChatRateLimiter rateLimiter) {
         this.chatClientBuilder = chatClientBuilder;
         this.mcpClientFactory = mcpClientFactory;
-        this.jwtService = jwtService;
+        this.rateLimiter = rateLimiter;
     }
 
     @PostMapping
-    public ResponseEntity<String> chat(
-            @RequestBody ChatRequest request,
-            @RequestHeader(value = "Authorization", required = false) String authHeader
-    ) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    public ResponseEntity<String> chat(@RequestBody ChatRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof UsernamePasswordAuthenticationToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to chat.");
         }
 
-        String rawToken = authHeader.substring(7);
+        String rawToken = (String) authentication.getCredentials();
+        String userEmail = authentication.getName();
 
-        if (!jwtService.isTokenValid(rawToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
+        if (!rateLimiter.tryConsume(userEmail)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("You're sending messages too quickly. Please wait a moment.");
         }
 
         try {
@@ -60,11 +65,11 @@ public class ChatController {
                 mcpClient.closeGracefully();
             }
         } catch (McpConnectionException e) {
-    log.error("MCP connection failed", e);
-    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Could not connect to backend services. Please try again.");
-} catch (Exception e) {
-    log.error("Chat request failed", e);
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. Please try again.");
-}
+            log.error("MCP connection failed", e);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Could not connect to backend services. Please try again.");
+        } catch (Exception e) {
+            log.error("Chat request failed", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. Please try again.");
+        }
     }
 }
