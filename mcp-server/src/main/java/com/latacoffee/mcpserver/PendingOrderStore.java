@@ -25,7 +25,7 @@ public class PendingOrderStore {
         PendingOrder order = pending.get(token);
 
         if (order == null) {
-            throw new IllegalArgumentException("This order preview has expired or doesn't exist. Please start over.");
+            throw new IllegalArgumentException("This order preview doesn't exist. Please start over.");
         }
 
         if (!order.userEmail().equals(userEmail)) {

@@ -10,7 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-
+import com.latacoffee.mcpserver.dto.MenuCategoryDto;
+import com.latacoffee.mcpserver.dto.MenuItemDto;
 import com.latacoffee.mcpserver.dto.OrderRequest;
 import com.latacoffee.mcpserver.dto.OrderResponse;
 
@@ -38,22 +39,34 @@ public class OrderTools {
     }
 
     @Tool(description = """
-            Preview a new coffee order for the current user, without actually placing it yet. 
-            Requires a list of exact menu item IDs (use getMenu first if you don't already know 
-            them), a pickup time in HH:mm 24-hour format (e.g. "14:30"), and optionally a name. 
-            Returns the real items, prices, and total for the user to review, plus a confirmation 
-            token. You must show this preview to the user and get their explicit confirmation 
-            before calling confirmOrder with the token, never call confirmOrder without the user 
-            genuinely agreeing to the preview first.
-            """)
+        Preview a new coffee order for the current user, without actually placing it yet. 
+        Requires a list of exact menu item IDs (use getMenu first if you don't already know 
+        them), a pickup time in HH:mm 24-hour format (e.g. "14:30"), and optionally a name. 
+        Returns the real item names, prices, and total for the user to review, plus a 
+        confirmation token. You must show this preview to the user and get their explicit 
+        confirmation before calling confirmOrder with the token, never call confirmOrder 
+        without the user genuinely agreeing to the preview first.
+        """)
     public OrderPreview previewOrder(String time, String name, List<String> items) {
         Authentication authentication = requireAuth();
         String userEmail = authentication.getName();
 
+        List<MenuItemDto> allMenuItems = fetchAllMenuItems();
+
+        List<OrderPreviewLine> lines = items.stream()
+                .map(itemId -> allMenuItems.stream()
+                        .filter(item -> item.id().equals(itemId))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Unknown menu item: " + itemId)))
+                .map(item -> new OrderPreviewLine(item.id(), item.n(), item.p()))
+                .toList();
+
+        double total = lines.stream().mapToDouble(OrderPreviewLine::price).sum();
+
         OrderRequest request = new OrderRequest(LocalTime.parse(time), name, items);
         String token = pendingOrderStore.store(userEmail, request);
 
-        return new OrderPreview(token, items, time, name);
+        return new OrderPreview(token, lines, total, time, name);
     }
 
     @Tool(description = """
@@ -85,4 +98,14 @@ public class OrderTools {
 
         return authentication;
     }
+    private List<MenuItemDto> fetchAllMenuItems() {
+    List<MenuCategoryDto> categories = restClient.get()
+            .uri("/api/menu")
+            .retrieve()
+            .body(new ParameterizedTypeReference<List<MenuCategoryDto>>() {});
+
+    return categories.stream()
+            .flatMap(category -> category.items().stream())
+            .toList();
+}
 }

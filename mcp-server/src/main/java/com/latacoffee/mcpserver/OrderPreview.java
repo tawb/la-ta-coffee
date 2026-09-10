@@ -2,5 +2,5 @@ package com.latacoffee.mcpserver;
 
 import java.util.List;
 
-public record OrderPreview(String confirmationToken, List<String> items, String time, String name) {
+public record OrderPreview(String confirmationToken, List<OrderPreviewLine> items, double total, String time, String name) {
 }
