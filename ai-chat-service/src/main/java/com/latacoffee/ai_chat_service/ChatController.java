@@ -21,13 +21,14 @@ import io.modelcontextprotocol.client.McpSyncClient;
 public class ChatController {
 
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
-
+    private final ChatRateLimiter rateLimiter;
     private final ChatClient.Builder chatClientBuilder;
     private final McpClientFactory mcpClientFactory;
 
-    public ChatController(ChatClient.Builder chatClientBuilder, McpClientFactory mcpClientFactory) {
+    public ChatController(ChatClient.Builder chatClientBuilder, McpClientFactory mcpClientFactory,ChatRateLimiter rateLimiter) {
         this.chatClientBuilder = chatClientBuilder;
         this.mcpClientFactory = mcpClientFactory;
+        this.rateLimiter = rateLimiter;
     }
 
     @PostMapping
@@ -39,6 +40,11 @@ public class ChatController {
         }
 
         String rawToken = (String) authentication.getCredentials();
+        String userEmail = authentication.getName();
+
+        if (!rateLimiter.tryConsume(userEmail)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("You're sending messages too quickly. Please wait a moment.");
+        }
 
         try {
             McpSyncClient mcpClient = mcpClientFactory.createClientForUser(rawToken);
