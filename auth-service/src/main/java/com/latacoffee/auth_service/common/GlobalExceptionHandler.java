@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.latacoffee.auth_service.auth.AccountNotFoundException;
 import com.latacoffee.auth_service.auth.EmailAlreadyExistsException;
+import com.latacoffee.auth_service.auth.EmailSendException;
 import com.latacoffee.auth_service.auth.InvalidCredentialsException;
 import com.latacoffee.auth_service.auth.InvalidResetTokenException;
 import com.latacoffee.auth_service.auth.InvalidRoleException;
@@ -39,5 +40,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("INVALID_ROLE", ex.getMessage()));
     }
-        
+    @ExceptionHandler(EmailSendException.class)
+    public ResponseEntity<ErrorResponse> handleEmailSendFailure(EmailSendException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("EMAIL_SEND_FAILED", "Could not send email. Please try again later."));
+    }
+            
 }
